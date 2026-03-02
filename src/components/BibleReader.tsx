@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { X, ChevronLeft, ChevronRight, BookOpen, Loader2, CheckCircle2, RefreshCw, Copy, Plus, Minus } from 'lucide-react';
 import { fetchBibleChapter, validateBibleText } from '../utils/geminiApi';
 import { toast } from 'sonner';
@@ -27,6 +27,7 @@ export function BibleReader({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fontSize, setFontSize] = useState(18);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -39,7 +40,13 @@ export function BibleReader({
   }, [isOpen, book, chapter]);
 
   useEffect(() => {
-    if (isOpen) loadChapter();
+    if (isOpen) {
+      loadChapter();
+      // Voltar ao topo ao mudar o capítulo
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+    }
   }, [isOpen, currentChapter]);
 
   const loadChapter = async (forceReload = false) => {
@@ -166,7 +173,10 @@ export function BibleReader({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-12 bg-[#0b161d] custom-scrollbar">
+        <div 
+          ref={scrollContainerRef}
+          className="flex-1 overflow-y-auto p-6 md:p-12 bg-[#0b161d] custom-scrollbar"
+        >
           {loading ? (
             <div className="flex flex-col items-center justify-center h-full">
               <Loader2 className="animate-spin text-[#2FA4FF] mb-4" size={40} />
