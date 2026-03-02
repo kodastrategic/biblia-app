@@ -246,8 +246,8 @@ export default function App() {
         book={readerBook}
         chapter={readerChapter}
         totalChapters={readerTotalChapters}
-        isRead={readChapters[readerBook]?.has(readerChapter) || false}
-        onMarkAsRead={() => toggleChapter(readerBook, readerChapter)}
+        readChapters={readChapters}
+        onMarkAsRead={(b, c) => toggleChapter(b, c)}
       />
     </div>
   );

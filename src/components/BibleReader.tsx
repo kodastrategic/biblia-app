@@ -9,8 +9,8 @@ interface BibleReaderProps {
   book: string;
   chapter: number;
   totalChapters: number;
-  isRead: boolean;
-  onMarkAsRead: () => void;
+  readChapters: Record<string, Set<number>>;
+  onMarkAsRead: (book: string, cap: number) => void;
 }
 
 export function BibleReader({
@@ -19,7 +19,7 @@ export function BibleReader({
   book,
   chapter,
   totalChapters,
-  isRead,
+  readChapters,
   onMarkAsRead,
 }: BibleReaderProps) {
   const [currentChapter, setCurrentChapter] = useState(chapter);
@@ -28,6 +28,8 @@ export function BibleReader({
   const [error, setError] = useState<string | null>(null);
   const [fontSize, setFontSize] = useState(18);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const isCurrentChapterRead = readChapters[book]?.has(currentChapter) || false;
 
   useEffect(() => {
     if (isOpen) {
@@ -160,12 +162,12 @@ export function BibleReader({
             <button onClick={() => setFontSize(s => Math.max(12, s-2))} className="p-2 text-gray-400 hover:text-white"><Minus size={18}/></button>
             <button onClick={() => setFontSize(s => Math.min(32, s+2))} className="p-2 text-gray-400 hover:text-white"><Plus size={18}/></button>
             <button 
-              onClick={onMarkAsRead}
+              onClick={() => onMarkAsRead(book, currentChapter)}
               className={`ml-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
-                isRead ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-white/5 text-gray-300 border-white/10'
+                isCurrentChapterRead ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-white/5 text-gray-300 border-white/10'
               }`}
             >
-              {isRead ? 'LIDO' : 'MARCAR'}
+              {isCurrentChapterRead ? 'LIDO' : 'MARCAR'}
             </button>
             <button onClick={onClose} className="ml-2 p-2 text-gray-400 hover:text-white">
               <X size={30} />
