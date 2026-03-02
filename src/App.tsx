@@ -155,63 +155,56 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-black via-[#0b1f2a] to-[#2a0f2f] text-white flex flex-col font-sans overflow-x-hidden">
       <Toaster position="top-center" theme="dark" />
 
-      {/* TOPBAR RECONSTRUÍDA COM ISOLAMENTO DE CAMADA */}
-      <div className="fixed top-0 left-0 right-0 w-full z-[9999] pointer-events-none">
-        <header className="pointer-events-auto bg-black/90 backdrop-blur-2xl border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.8)]">
-          <div className="pt-[env(safe-area-inset-top)]">
-            <div className="max-w-7xl mx-auto px-6 h-20 md:h-24 flex items-center justify-between">
-              <div className="font-serif italic text-xl md:text-2xl font-medium tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-                Bible Life
-              </div>
-              <nav className="flex items-center gap-3 md:gap-6">
-                <button
-                  onClick={() => setIsLibraryOpen(true)}
-                  className="flex items-center gap-2.5 px-4 md:px-6 py-2.5 rounded-2xl bg-[#2FA4FF] text-white hover:bg-[#2FA4FF]/90 shadow-[0_0_20px_rgba(47,164,255,0.3)] transition-all active:scale-95 group"
-                >
-                  <BibleIcon size={20} className="group-hover:rotate-12 transition-transform" />
-                  <span className="text-xs md:text-sm font-bold uppercase tracking-widest">Bíblia</span>
-                </button>
-                <button
-                  onClick={() => setIsSettingsOpen(true)}
-                  className="flex items-center gap-2.5 px-4 md:px-6 py-2.5 rounded-2xl bg-white/10 text-white hover:bg-white/20 border border-white/10 transition-all active:scale-95 group"
-                >
-                  <Settings size={20} className="group-hover:rotate-90 transition-transform duration-500" />
-                  <span className="text-xs md:text-sm font-bold uppercase tracking-widest">Ajustes</span>
-                </button>
-              </nav>
+      <header className="fixed top-0 left-0 right-0 w-full z-[1000] bg-black/80 backdrop-blur-2xl border-b border-white/10 shadow-2xl">
+        <div className="pt-[env(safe-area-inset-top)]">
+          <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
+            <div className="font-serif italic text-lg md:text-xl font-medium tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+              Bible Life
             </div>
+            <nav className="flex items-center gap-2 md:gap-4">
+              <button
+                onClick={() => setIsLibraryOpen(true)}
+                className="flex items-center gap-2 px-3 md:px-5 py-2 rounded-xl bg-[#2FA4FF]/10 text-[#2FA4FF] hover:bg-[#2FA4FF]/20 border border-[#2FA4FF]/20 transition-all active:scale-95 group"
+              >
+                <BibleIcon size={18} className="group-hover:rotate-12 transition-transform" />
+                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest">Bíblia</span>
+              </button>
+              <button
+                onClick={() => setIsSettingsOpen(true)}
+                className="flex items-center gap-2 px-3 md:px-5 py-2 rounded-xl bg-white/5 text-gray-400 hover:bg-white/10 border border-white/5 transition-all active:scale-95 group"
+              >
+                <Settings size={18} className="group-hover:rotate-90 transition-transform duration-500" />
+                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest">Ajustes</span>
+              </button>
+            </nav>
           </div>
-        </header>
-      </div>
+        </div>
+      </header>
 
-      <main className={`px-4 md:px-12 lg:px-20 pt-[calc(100px+env(safe-area-inset-top))] md:pt-40 pb-20 transition-all duration-500 flex-1 ${isReaderOpen || isLibraryOpen ? 'blur-2xl opacity-20 pointer-events-none' : 'blur-0 opacity-100'}`}>
+      <main className={`px-4 md:px-12 lg:px-20 pt-[calc(84px+env(safe-area-inset-top))] md:pt-32 pb-20 transition-all duration-500 flex-1 ${isReaderOpen || isLibraryOpen ? 'blur-2xl opacity-20 pointer-events-none' : 'blur-0 opacity-100'}`}>
         
-        <header className="mb-16 md:mb-24 max-w-2xl relative z-10">
-          <h1 className="text-[32px] md:text-[64px] leading-[1.05] mb-8 font-light italic" style={{ fontFamily: "'Crimson Text', serif" }}>
+        <header className="mb-12 md:mb-16 max-w-2xl">
+          <h1 className="text-[28px] md:text-[52px] leading-[1.1] mb-6 font-light italic" style={{ fontFamily: "'Crimson Text', serif" }}>
+            <br />
             Um dia por vez. <br />
             Um texto por dia.  <br />
             Uma vida transformada.  
           </h1>
-          <div className="flex gap-6 items-start">
-             <div className="w-1 self-stretch bg-gradient-to-b from-[#2FA4FF] to-transparent opacity-50 rounded-full" />
-             <p className="text-[16px] md:text-[20px] text-[#DADADA] leading-relaxed max-w-lg">
-                Quando a Palavra ocupa um lugar diário na rotina, o entendimento é ampliado e a paz se torna o alicerce de cada decisão.
-             </p>
-          </div>
+          <p className="text-[14px] md:text-[18px] text-[#DADADA] border-l-2 border-[#2FA4FF]/30 pl-6">
+            Quando a Palavra ocupa um lugar diário na rotina, o entendimento é ampliado...
+          </p>
         </header>
         
-        <div className="text-center mb-16 md:mb-24 relative">
-          <div className="absolute inset-0 bg-[#2FA4FF]/10 blur-[120px] -z-10 rounded-full scale-150" />
-          <p className="text-[14px] md:text-[18px] tracking-[0.6em] text-[#2FA4FF] font-bold uppercase mb-6 opacity-80">
+        <div className="text-center mb-12 md:mb-20 relative">
+          <p className="text-[20px] md:text-[40px] tracking-[0.5em] text-[#2FA4FF] font-black uppercase mb-4">
             Progresso de Leitura
           </p>
-           <h2 className="text-[42px] md:text-[86px] mb-4 bg-gradient-to-r from-white via-[#2FA4FF] to-[#8B5CF6] bg-clip-text text-transparent leading-[1.1] font-bold" style={{ fontFamily: "'Crimson Text', serif" }}>
+           <h2 className="text-[36px] md:text-[72px] mb-3 md:mb-4 bg-gradient-to-r from-[#2FA4FF] to-[#8B5CF6] bg-clip-text text-transparent leading-tight" style={{ fontFamily: "'Crimson Text', serif" }}>
             {userName ? `${userName.toUpperCase()}, VOCÊ JÁ LEU ${readingPercentage}%` : `VOCÊ JÁ LEU ${readingPercentage}%`}
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#2FA4FF] to-transparent mx-auto mt-8 opacity-30" />
         </div>
 
-        <div className="mb-20 md:mb-32 relative z-20">
+        <div className="mb-12 md:mb-20">
           <DailyReadingCard
             currentDay={selectedDay}
             dailyReading={dailyReading}
@@ -222,14 +215,11 @@ export default function App() {
           />
         </div>
 
-        <div className="space-y-40">
+        <div className="space-y-32">
           <section>
-            <div className="flex items-center gap-6 mb-12">
-               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
-               <h3 className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-gray-500 font-bold italic">Antigo Testamento</h3>
-               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+            <h3 className="text-center text-xs tracking-[0.3em] uppercase text-gray-500 mb-8 italic">Antigo Testamento</h3>
+            {/* GRID AJUSTADA COM ESPAÇAMENTO CORRETO ABAIXO */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-14">
               {oldTestamentBooks.map((book) => (
                 <BookCard key={book.name} book={book} readChapters={readChapters[book.name] || new Set()} onToggleChapter={(chapter) => toggleChapter(book.name, chapter)} onReadNow={handleReadNow} />
               ))}
@@ -237,12 +227,9 @@ export default function App() {
           </section>
 
           <section>
-            <div className="flex items-center gap-6 mb-12">
-               <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/10" />
-               <h3 className="text-[10px] md:text-xs tracking-[0.4em] uppercase text-gray-500 font-bold italic">Novo Testamento</h3>
-               <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/10" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+            <h3 className="text-center text-xs tracking-[0.3em] uppercase text-gray-500 mb-8 italic">Novo Testamento</h3>
+            {/* GRID AJUSTADA COM ESPAÇAMENTO CORRETO ABAIXO */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-14">
               {newTestamentBooks.map((book) => (
                 <BookCard key={book.name} book={book} readChapters={readChapters[book.name] || new Set()} onToggleChapter={(chapter) => toggleChapter(book.name, chapter)} onReadNow={handleReadNow} />
               ))}
