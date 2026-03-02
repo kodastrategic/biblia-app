@@ -150,16 +150,16 @@ export default function App() {
   const dailyReading = getReadingForDay(selectedDay);
 
   return (
-    <div className="min-h-screen bg-[#02080a] text-white flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#02080a] text-white flex flex-col font-sans selection:bg-[#2FA4FF]/30">
       <Toaster position="top-center" theme="dark" />
 
-      {/* TOPBAR - POSIÇÃO FIXA ABSOLUTA FORA DO MAIN */}
-      <header className="fixed top-0 left-0 right-0 h-16 md:h-20 bg-[#050b0f]/80 backdrop-blur-xl border-b border-white/10 z-[50] flex items-center">
-        <div className="max-w-7xl mx-auto w-full px-6 flex items-center justify-between">
+      {/* TOPBAR - STICKY PARA EVITAR CONFLITOS DE FLUXO */}
+      <nav className="sticky top-0 w-full h-16 md:h-20 bg-black/60 backdrop-blur-xl border-b border-white/10 z-[50] flex items-center justify-center px-6">
+        <div className="w-full max-w-7xl flex items-center justify-between">
           <div className="font-serif italic text-lg md:text-xl font-medium tracking-tight text-white">
             Bible Life
           </div>
-          <nav className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setIsLibraryOpen(true)}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#2FA4FF]/20 text-[#2FA4FF] hover:bg-[#2FA4FF]/30 border border-[#2FA4FF]/30 transition-all active:scale-95"
@@ -169,16 +169,16 @@ export default function App() {
             </button>
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 rounded-xl bg-white/5 text-white/60 hover:bg-white/10 border border-white/10 transition-all active:scale-95"
+              className="p-2 rounded-xl bg-white/5 text-white/60 hover:bg-white/10 border border-white/5 transition-all active:scale-95"
             >
               <Settings size={18} />
             </button>
-          </nav>
+          </div>
         </div>
-      </header>
+      </nav>
 
-      {/* CONTEÚDO COM PADDING-TOP PARA NÃO FICAR EMBAIXO DA BARRA */}
-      <main className={`flex-1 px-4 md:px-12 lg:px-20 pt-24 md:pt-32 pb-20 transition-all duration-500 ${isReaderOpen || isLibraryOpen ? 'blur-2xl opacity-20 pointer-events-none' : 'blur-0 opacity-100'}`}>
+      {/* CONTEÚDO SEM PADDING TOP ADICIONAL (STICKY JÁ OCUPA ESPAÇO) */}
+      <main className={`flex-1 px-4 md:px-12 lg:px-20 py-12 md:py-20 transition-all duration-500 ${isReaderOpen || isLibraryOpen ? 'blur-2xl opacity-20 pointer-events-none' : 'blur-0 opacity-100'}`}>
         
         <header className="mb-12 md:mb-16 max-w-2xl">
           <h1 className="text-[28px] md:text-[52px] leading-[1.1] mb-6 font-light italic" style={{ fontFamily: "'Crimson Text', serif" }}>
