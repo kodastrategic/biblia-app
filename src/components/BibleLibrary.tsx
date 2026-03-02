@@ -11,10 +11,11 @@ interface BibleLibraryProps {
   isOpen: boolean;
   onClose: () => void;
   books: Book[];
+  readChapters: Record<string, Set<number>>;
   onSelectChapter: (bookName: string, chapter: number) => void;
 }
 
-export function BibleLibrary({ isOpen, onClose, books, onSelectChapter }: BibleLibraryProps) {
+export function BibleLibrary({ isOpen, onClose, books, readChapters, onSelectChapter }: BibleLibraryProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
@@ -96,15 +97,22 @@ export function BibleLibrary({ isOpen, onClose, books, onSelectChapter }: BibleL
               <p className="text-xs text-[#2FA4FF] uppercase tracking-[0.2em] font-bold">Capítulos de {selectedBook.name}</p>
               
               <div className="grid grid-cols-6 sm:grid-cols-7 gap-2">
-                {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map((cap) => (
-                  <button
-                    key={cap}
-                    onClick={() => onSelectChapter(selectedBook.name, cap)}
-                    className="w-full aspect-square flex items-center justify-center bg-white/5 border border-white/10 rounded-lg text-xs font-bold text-[#DADADA] hover:bg-gradient-to-r hover:from-[#2FA4FF] hover:to-[#8B5CF6] hover:text-white hover:border-transparent transition-all active:scale-90"
-                  >
-                    {cap}
-                  </button>
-                ))}
+                {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map((cap) => {
+                  const isRead = readChapters[selectedBook.name]?.has(cap);
+                  return (
+                    <button
+                      key={cap}
+                      onClick={() => onSelectChapter(selectedBook.name, cap)}
+                      className={`w-full aspect-square flex items-center justify-center border rounded-lg text-xs font-bold transition-all active:scale-90 ${
+                        isRead 
+                        ? 'bg-gradient-to-r from-[#2FA4FF] to-[#8B5CF6] text-white border-transparent shadow-[0_0_15px_rgba(47,164,255,0.3)]' 
+                        : 'bg-white/5 border-white/10 text-[#DADADA] hover:bg-gradient-to-r hover:from-[#2FA4FF] hover:to-[#8B5CF6] hover:text-white hover:border-transparent'
+                      }`}
+                    >
+                      {cap}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

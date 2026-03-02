@@ -239,7 +239,13 @@ export default function App() {
       </main>
 
       <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} userName={userName} onUserNameChange={(n) => { setUserName(n); localStorage.setItem('bibleUserName', n); }} />
-      <BibleLibrary isOpen={isLibraryOpen} onClose={() => setIsLibraryOpen(false)} books={books as any} onSelectChapter={handleReadNow} />
+      <BibleLibrary 
+        isOpen={isLibraryOpen} 
+        onClose={() => setIsLibraryOpen(false)} 
+        books={books as any} 
+        readChapters={readChapters}
+        onSelectChapter={handleReadNow} 
+      />
       <BibleReader
         isOpen={isReaderOpen}
         onClose={() => setIsReaderOpen(false)}
