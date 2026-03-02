@@ -155,7 +155,7 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-black via-[#0b1f2a] to-[#2a0f2f] text-white flex flex-col font-sans overflow-x-hidden">
       <Toaster position="top-center" theme="dark" />
 
-      <header className="fixed top-0 left-0 right-0 w-full z-[100] bg-black/60 backdrop-blur-2xl border-b border-white/10 shadow-lg">
+      <header className="fixed top-0 left-0 right-0 w-full z-[1000] bg-black/80 backdrop-blur-2xl border-b border-white/10 shadow-2xl">
         <div className="pt-[env(safe-area-inset-top)]">
           <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
             <div className="font-serif italic text-lg md:text-xl font-medium tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
