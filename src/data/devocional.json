@@ -1,0 +1,315 @@
+{
+  "titulo": "Homem de Fé — Devocional de 30 Dias na Doutrina do Evangelho Pleno",
+  "subtitulo": "Salvação, Santificação, Batismo no Espírito Santo e Cura Divina, e a Esperança da Volta de Cristo",
+  "publico_alvo": "Homens cristãos",
+  "introducao": "Este devocional foi estruturado sobre os quatro pilares clássicos do Evangelho Pleno (também chamado Evangelho Quadrangular): Jesus Salva, Jesus Santifica, Jesus Batiza no Espírito Santo e Jesus Cura, além da esperança viva da Segunda Vinda de Cristo. Ao longo de 30 dias, o objetivo é levar o homem a experimentar essas quatro verdades de forma prática no seu caráter, no seu lar, no seu trabalho e na sua caminhada espiritual. Separe de 10 a 20 minutos por dia, leia o texto bíblico indicado na sua Bíblia, medite na reflexão, assuma o desafio prático e ore a oração sugerida em voz alta.",
+  "estrutura_do_devocional": [
+    "Semana 1 (Dias 1-6): Salvação — O fundamento",
+    "Semana 2 (Dias 7-13): Santificação — O caráter do homem novo",
+    "Semana 3 (Dias 14-20): Batismo no Espírito Santo — Poder para viver e vencer",
+    "Semana 4 (Dias 21-26): Cura Divina — Restauração de corpo, alma e relacionamentos",
+    "Semana 5 (Dias 27-30): A Volta de Cristo — Vivendo com propósito e esperança"
+  ],
+  "dias": [
+    {
+      "dia": 1,
+      "semana_tema": "Salvação",
+      "titulo": "Um Homem Novo",
+      "referencia_biblica": "2 Coríntios 5:17",
+      "texto_base": "Se alguém está em Cristo, é nova criatura; as coisas antigas já passaram, eis que tudo se fez novo.",
+      "reflexao": "Todo homem carrega uma história — algumas vitórias, muitas quedas, decisões das quais se arrepende. O Evangelho Pleno começa exatamente aqui: a salvação não é um ajuste de comportamento, é uma nova criação. Em Cristo, você não é definido pelo seu pior dia, pelo seu maior erro ou pela opinião que os outros formaram sobre você. Deus não está reformando o homem velho; Ele está gerando um homem novo. Isso muda a forma como você enxerga o espelho pela manhã.",
+      "desafio_pratico": "Escreva em um papel uma frase do seu passado que ainda pesa sobre você. Risque-a e escreva ao lado: 'Isso já passou. Sou nova criatura.' Guarde esse papel na carteira esta semana.",
+      "oracao": "Senhor, obrigado porque em Cristo eu sou nova criatura. Ajuda-me a andar hoje como o homem novo que Tu já me fizeste, e não como o homem velho que eu já fui. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 2,
+      "semana_tema": "Salvação",
+      "titulo": "Graça, Não Mérito",
+      "referencia_biblica": "Efésios 2:8-9",
+      "texto_base": "Pela graça sois salvos, por meio da fé; isso não vem de vós, é dom de Deus, não vem das obras, para que ninguém se glorie.",
+      "reflexao": "Muitos homens tentam se aproximar de Deus do mesmo jeito que constroem uma carreira: com esforço, desempenho e resultado. Mas a salvação não funciona como um currículo. Ela é dom. Isso é libertador porque tira de você o peso de precisar 'merecer' o amor de Deus todos os dias, e é desafiador porque fere o orgulho de quem gosta de conquistar tudo com as próprias mãos. Receber graça exige humildade — a mesma humildade que também vai marcar todo o restante da sua caminhada.",
+      "desafio_pratico": "Identifique uma área em que você tem tentado 'merecer' a aprovação de Deus através de esforço próprio. Confesse isso em oração e agradeça pela graça já dada em Cristo.",
+      "oracao": "Pai, reconheço que não tenho como merecer a Tua salvação. Recebo hoje, pela fé, o que Tu já me deste de graça. Ensina-me a viver como filho e não como empregado tentando provar valor. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 3,
+      "semana_tema": "Salvação",
+      "titulo": "Arrependimento de Verdade",
+      "referencia_biblica": "Atos 3:19",
+      "texto_base": "Arrependei-vos, pois, e convertei-vos, para que sejam apagados os vossos pecados.",
+      "reflexao": "Arrependimento não é apenas sentir culpa; é mudar de direção. Muitos homens confundem remorso com arrependimento — lamentam a consequência do erro, mas continuam andando no mesmo caminho. O arrependimento bíblico é uma virada de 180 graus: você reconhece o erro diante de Deus, recebe o perdão e passa a andar em outra direção. Isso exige coragem, porque significa admitir que estava errado — algo difícil para quem foi ensinado que homem forte nunca erra.",
+      "desafio_pratico": "Se existe algum pecado recorrente na sua vida, nomeie-o especificamente diante de Deus hoje (não de forma genérica) e peça um plano prático para mudar de direção nessa área.",
+      "oracao": "Senhor, eu me arrependo hoje, não apenas de sentir o peso do meu pecado, mas de continuar andando na mesma direção. Muda o rumo dos meus passos. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 4,
+      "semana_tema": "Salvação",
+      "titulo": "Identidade, Não Comparação",
+      "referencia_biblica": "Gálatas 2:20",
+      "texto_base": "Já não sou eu quem vive, mas Cristo vive em mim.",
+      "reflexao": "O mundo mede o homem pelo salário, pelo cargo, pelo corpo, pelos likes. A salvação recoloca a identidade em outro lugar: você não é mais definido pelo que produz, mas por quem Cristo é em você. Isso não anula sua vocação profissional, mas tira dela o peso de ser a fonte do seu valor. Um homem que sabe quem é em Cristo compete menos e serve mais.",
+      "desafio_pratico": "Liste três coisas que você costuma usar para provar seu valor (dinheiro, corpo, cargo, aprovação). Ore entregando cada uma a Deus e pedindo que Cristo seja o centro da sua identidade.",
+      "oracao": "Senhor, tira de mim a necessidade de provar meu valor pelas coisas do mundo. Que a minha identidade esteja firmada em quem Tu és em mim. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 5,
+      "semana_tema": "Salvação",
+      "titulo": "Sem Mais Vergonha",
+      "referencia_biblica": "Romanos 8:1",
+      "texto_base": "Portanto, agora nenhuma condenação há para os que estão em Cristo Jesus.",
+      "reflexao": "A vergonha é um dos maiores obstáculos que impedem homens de se aproximarem de Deus — e de pedirem ajuda a outros irmãos. Você pode carregar por anos um erro do passado (uma traição, um vício, uma decisão que magoou a família) como se ainda pesasse sobre você uma sentença. Mas a Palavra é categórica: em Cristo, não há condenação. Isso não é permissão para pecar, é fundamento para andar livre.",
+      "desafio_pratico": "Se você tem escondido algo por vergonha, considere compartilhar com um irmão de confiança ou líder da igreja esta semana. A luz quebra o poder do segredo.",
+      "oracao": "Pai, eu recebo hoje a verdade de que não há condenação para mim em Cristo. Liberta-me da vergonha que me isola e me impede de andar em liberdade. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 6,
+      "semana_tema": "Salvação",
+      "titulo": "Filho, Não Órfão",
+      "referencia_biblica": "Romanos 8:15",
+      "texto_base": "Recebestes o espírito de adoção de filhos, pelo qual clamamos: Aba, Pai.",
+      "reflexao": "Muitos homens carregam feridas de pais ausentes, distantes ou duros, e isso molda a forma como enxergam Deus — como um chefe exigente, nunca satisfeito. O Evangelho revela outra realidade: você foi adotado como filho. Não um empregado tentando agradar o patrão, mas um filho amado. Essa verdade cura a forma como você se relaciona com autoridade, com seu próprio pai terreno e com a paternidade que talvez você mesmo exerça hoje.",
+      "desafio_pratico": "Passe cinco minutos hoje chamando Deus de 'Pai' em oração, de forma pessoal e simples, como um filho falaria com o pai, não como um súdito falaria com um rei distante.",
+      "oracao": "Aba, Pai, obrigado por me adotar como filho. Cura em mim qualquer imagem distorcida de paternidade e ensina-me a Te conhecer como o bom Pai que Tu és. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 7,
+      "semana_tema": "Santificação",
+      "titulo": "Integridade Quando Ninguém Vê",
+      "referencia_biblica": "Provérbios 10:9",
+      "texto_base": "Quem anda em integridade anda seguro.",
+      "reflexao": "O caráter de um homem se revela no que ele faz quando está sozinho: nas contas da empresa, nas guias no celular, nas palavras sobre o chefe pelas costas. Santificação é o processo de deixar que o Espírito de Deus molde essas áreas escondidas, não apenas a imagem pública. Segurança não vem de nunca ser pego, vem de não ter nada a esconder.",
+      "desafio_pratico": "Pense em uma área da sua vida que você trata diferente quando está sozinho. Peça a Deus coragem para alinhar essa área à sua vida pública.",
+      "oracao": "Senhor, forma em mim um caráter que seja o mesmo em público e em segredo. Que eu ande em integridade e, por isso, em segurança. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 8,
+      "semana_tema": "Santificação",
+      "titulo": "Domínio Próprio",
+      "referencia_biblica": "Provérbios 25:28",
+      "texto_base": "O homem que não tem domínio próprio é como uma cidade derrubada, sem muros.",
+      "reflexao": "Domínio próprio é um dos traços mais atacados na cultura atual — no consumo, na sexualidade, no controle emocional, no uso do tempo. Um homem sem domínio próprio fica exposto a qualquer invasão: da tentação, da raiva, da preguiça, do vício. O fruto do Espírito não é apenas para o culto de domingo; ele reconstrói os muros derrubados da sua vida prática.",
+      "desafio_pratico": "Escolha uma área específica (tempo de tela, alimentação, gastos, temperamento) e estabeleça hoje um limite concreto e mensurável para essa semana.",
+      "oracao": "Senhor, reconstrói os muros da minha vida que caíram pela falta de domínio próprio. Fortalece-me pelo Teu Espírito nas áreas em que sou mais fraco. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 9,
+      "semana_tema": "Santificação",
+      "titulo": "A Batalha dos Olhos",
+      "referencia_biblica": "Jó 31:1",
+      "texto_base": "Fiz aliança com os meus olhos; como, pois, os fixaria eu numa virgem?",
+      "reflexao": "Jó fez um pacto consciente com seus próprios olhos, décadas antes da internet, da pornografia digital e das redes sociais. A batalha pela pureza não começa na ação, começa no olhar e no que você permite que entre pela mente. Isso não é sobre vergonha, é sobre proteção — proteger seu casamento, sua mente e sua comunhão com Deus.",
+      "desafio_pratico": "Se necessário, instale um filtro de conteúdo no celular e no computador esta semana, ou peça a um irmão de confiança para ser seu parceiro de prestação de contas nessa área.",
+      "oracao": "Senhor, faço hoje aliança com os meus olhos. Guarda a minha mente e os meus olhos da impureza que quer corromper meu coração. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 10,
+      "semana_tema": "Santificação",
+      "titulo": "A Língua que Constrói",
+      "referencia_biblica": "Tiago 3:6",
+      "texto_base": "A língua também é fogo... capaz de contaminar todo o corpo.",
+      "reflexao": "Palavras ditas na raiva, no sarcasmo ou na ausência marcam esposa, filhos e colegas de trabalho de uma forma que anos depois ainda ecoam. Homens muitas vezes aprenderam a usar o silêncio ou a explosão como formas de comunicação. A santificação da língua é um trabalho diário: pensar antes de falar, e falar para edificar, não para ferir.",
+      "desafio_pratico": "Hoje, antes de responder algo em um momento de tensão, respire e pergunte-se: 'Isso edifica ou destrói?' Pratique isso pelo menos uma vez.",
+      "oracao": "Senhor, coloca guarda à minha boca. Que minhas palavras hoje edifiquem minha esposa, meus filhos e todos ao meu redor, e não os destruam. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 11,
+      "semana_tema": "Santificação",
+      "titulo": "Trabalho como Adoração",
+      "referencia_biblica": "Colossenses 3:23",
+      "texto_base": "Tudo o que fizerdes, fazei-o de todo o coração, como para o Senhor, e não para os homens.",
+      "reflexao": "Para muitos homens, o trabalho é a principal arena da vida — e também a maior fonte de ansiedade, comparação e identidade equivocada. A Palavra reposiciona o trabalho: ele deixa de ser apenas sustento ou status e se torna adoração. Isso muda a forma como você trata o cliente difícil, entrega o relatório e trata o colega de trabalho.",
+      "desafio_pratico": "Amanhã, antes de começar o expediente, ore dedicando especificamente aquele dia de trabalho como oferta a Deus.",
+      "oracao": "Senhor, que meu trabalho de hoje seja oferta a Ti. Ajuda-me a trabalhar com excelência e integridade, como quem serve ao Senhor e não apenas a um chefe. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 12,
+      "semana_tema": "Santificação",
+      "titulo": "Liderar Servindo",
+      "referencia_biblica": "Efésios 5:25",
+      "texto_base": "Maridos, amai vossas mulheres, como também Cristo amou a igreja e a si mesmo se entregou por ela.",
+      "reflexao": "A liderança no lar bíblico não é sobre autoridade imposta, mas sobre entrega. Cristo não liderou a igreja dominando; Ele liderou se entregando por ela. Um homem que lidera assim não usa a Palavra para exigir submissão, mas vive de forma tão entregue que a confiança nasce naturalmente. Isso vale para o casamento, e também para como você lidera filhos e equipes.",
+      "desafio_pratico": "Faça hoje algo concreto de serviço para sua esposa (ou para alguém que você lidera) sem que seja pedido — um ato de entrega, não de obrigação.",
+      "oracao": "Senhor, ensina-me a liderar como Cristo liderou: entregando-me, e não dominando. Que meu lar veja em mim um reflexo do Teu amor. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 13,
+      "semana_tema": "Santificação",
+      "titulo": "Perdão que Liberta",
+      "referencia_biblica": "Efésios 4:32",
+      "texto_base": "Sede uns para com os outros benignos, compassivos, perdoando-vos uns aos outros, como também Deus vos perdoou em Cristo.",
+      "reflexao": "Muitos homens carregam mágoas antigas — de um pai, de um irmão, de um sócio que traiu a confiança — como se guardar rancor fosse proteção. Na verdade, é uma prisão. Perdoar não significa dizer que o erro não importou; significa entregar a Deus o direito de fazer justiça e se libertar do peso de carregar aquilo. É um dos atos de força mais difíceis — e mais libertadores — que existem.",
+      "desafio_pratico": "Escreva o nome de alguém que você ainda não perdoou completamente. Ore especificamente entregando essa pessoa e essa dor a Deus hoje.",
+      "oracao": "Senhor, eu escolho perdoar como Tu me perdoaste. Liberta-me do peso do rancor e cura o meu coração dessa ferida. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 14,
+      "semana_tema": "Batismo no Espírito Santo",
+      "titulo": "Sede de Mais",
+      "referencia_biblica": "Lucas 11:13",
+      "texto_base": "Quanto mais o Pai celestial dará o Espírito Santo àqueles que lhe pedirem?",
+      "reflexao": "O Evangelho Pleno ensina que a salvação é o início, não o fim da experiência com Deus. Existe uma promessa de poder — o batismo no Espírito Santo — para capacitar o crente a viver e testemunhar com intensidade. Muitos homens vivem uma fé morna porque nunca buscaram essa plenitude com sede genuína. Deus não nega esse dom a quem pede.",
+      "desafio_pratico": "Reserve um tempo de oração hoje pedindo especificamente a Deus uma renovação do Espírito Santo sobre sua vida, com sinceridade e expectativa.",
+      "oracao": "Pai, eu tenho sede de mais de Ti. Enche-me do Teu Espírito Santo hoje e renova o fogo da minha fé. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 15,
+      "semana_tema": "Batismo no Espírito Santo",
+      "titulo": "Poder para Testemunhar",
+      "referencia_biblica": "Atos 1:8",
+      "texto_base": "Recebereis poder, ao descer sobre vós o Espírito Santo, e sereis minhas testemunhas.",
+      "reflexao": "Muitos homens têm medo de falar de Cristo — no trabalho, na família, entre amigos — por medo de rejeição ou de não saber responder a uma pergunta difícil. O batismo no Espírito Santo não promete eloquência; promete poder e coragem. Testemunhar não é vencer um debate teológico, é contar o que Cristo fez na sua própria vida.",
+      "desafio_pratico": "Identifique uma pessoa próxima de você que ainda não conhece a Cristo. Ore por ela hoje e peça a Deus uma oportunidade natural de falar sobre sua fé com ela esta semana.",
+      "oracao": "Senhor, enche-me de poder e coragem para testemunhar de Ti. Usa a minha vida como testemunho vivo do Teu poder transformador. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 16,
+      "semana_tema": "Batismo no Espírito Santo",
+      "titulo": "Dons a Serviço, Não para Exibição",
+      "referencia_biblica": "1 Coríntios 12:7",
+      "texto_base": "A cada um é dada a manifestação do Espírito para o que for útil.",
+      "reflexao": "Os dons espirituais não foram dados para status dentro da igreja, mas para servir. Um homem espiritualmente maduro não pergunta 'qual dom me destaca?', mas 'como posso servir o corpo de Cristo com o que recebi?'. Liderança, ensino, misericórdia, hospitalidade, discernimento — cada dom tem lugar no Reino quando exercido com humildade.",
+      "desafio_pratico": "Pense em um dom ou habilidade que Deus lhe deu (liderança, ensino, ajuda prática, generosidade) e planeje uma forma concreta de usá-lo para servir a igreja ou o próximo nesta semana.",
+      "oracao": "Senhor, revela-me os dons que colocaste em mim e ensina-me a usá-los para servir, e não para me exaltar. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 17,
+      "semana_tema": "Batismo no Espírito Santo",
+      "titulo": "A Oração que Move",
+      "referencia_biblica": "Tiago 5:16",
+      "texto_base": "A súplica de um justo pode muito em seus efeitos.",
+      "reflexao": "Muitos homens tratam a oração como último recurso, depois de esgotarem toda estratégia própria. O Evangelho Pleno convida a uma vida de oração constante e ousada — não apenas em crise, mas como estilo de vida diário. Um homem de oração é um homem que reconhece seus limites e recorre ao poder de Deus antes, durante e depois de agir.",
+      "desafio_pratico": "Estabeleça um horário fixo nos próximos dias para orar — mesmo que sejam apenas 10 minutos — antes de começar suas atividades.",
+      "oracao": "Senhor, ensina-me a orar com fé e constância. Que minha primeira reação diante dos desafios seja buscar-Te, e não depender apenas de mim mesmo. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 18,
+      "semana_tema": "Batismo no Espírito Santo",
+      "titulo": "A Armadura de Deus",
+      "referencia_biblica": "Efésios 6:11",
+      "texto_base": "Revesti-vos de toda a armadura de Deus, para poderdes ficar firmes contra as astutas ciladas do diabo.",
+      "reflexao": "Todo homem enfrenta uma batalha espiritual real, ainda que muitas vezes invisível: tentação, desânimo, mentiras sobre sua identidade, ataques ao casamento e à família. Paulo não descreve uma batalha ocasional, mas uma guerra contínua que exige preparo diário. A armadura — verdade, justiça, fé, salvação, Palavra — não é opcional para quem quer ficar de pé.",
+      "desafio_pratico": "Leia Efésios 6:10-18 hoje e, ao se vestir pela manhã, use isso como lembrete simbólico para 'vestir' cada peça da armadura espiritual em oração.",
+      "oracao": "Senhor, eu me visto hoje da Tua armadura. Fortalece-me para resistir às astutas ciladas do inimigo e ficar firme na batalha espiritual. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 19,
+      "semana_tema": "Batismo no Espírito Santo",
+      "titulo": "Espírito, Não Carne",
+      "referencia_biblica": "Gálatas 5:16",
+      "texto_base": "Andai em Espírito, e jamais satisfareis a cobiça da carne.",
+      "reflexao": "A luta entre carne e Espírito não é vencida por força de vontade isolada, mas por uma vida diária de dependência do Espírito Santo. Quando você anda no Espírito — através da Palavra, da oração, da comunhão — os impulsos da carne perdem espaço naturalmente. Não é sobre reprimir desejos, é sobre alimentar o homem espiritual mais do que o homem carnal.",
+      "desafio_pratico": "Substitua hoje um hábito que alimenta a carne (rolagem infinita de redes sociais, por exemplo) por um momento breve de leitura bíblica ou oração.",
+      "oracao": "Senhor, ensina-me a andar no Espírito todos os dias. Que eu alimente mais o meu espírito do que a minha carne. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 20,
+      "semana_tema": "Batismo no Espírito Santo",
+      "titulo": "O Fruto que Revela o Homem",
+      "referencia_biblica": "Gálatas 5:22-23",
+      "texto_base": "Mas o fruto do Espírito é: amor, alegria, paz, longanimidade, benignidade, bondade, fidelidade, mansidão, domínio próprio.",
+      "reflexao": "Dons impressionam, mas fruto revela o caráter. É possível ter dons espirituais notáveis e, ainda assim, um caráter imaturo. O fruto do Espírito é o verdadeiro termômetro da vida cheia do Espírito Santo: como você trata sua esposa quando está cansado, como reage ao trânsito, como fala quando é contrariado. Isso é o que realmente mostra quanto do Espírito governa sua vida.",
+      "desafio_pratico": "Escolha um fruto do Espírito (paciência, mansidão, domínio próprio) que você mais precisa desenvolver e peça a Deus, especificamente, por essa área hoje.",
+      "oracao": "Senhor, produz em mim o fruto do Teu Espírito. Que meu caráter, e não apenas minhas palavras, revele que ando cheio de Ti. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 21,
+      "semana_tema": "Cura Divina",
+      "titulo": "Deus que Cura o Corpo",
+      "referencia_biblica": "Êxodo 15:26",
+      "texto_base": "Eu sou o Senhor que te sara.",
+      "reflexao": "A cura divina é um dos pilares do Evangelho Pleno: Deus não apenas salva a alma, Ele também se importa com o corpo. Isso não significa que toda doença tenha uma resposta imediata ou que a fé substitua o cuidado médico, mas significa que você pode levar sua saúde física a Deus em oração com fé genuína, e não apenas como último recurso.",
+      "desafio_pratico": "Se você ou alguém próximo enfrenta uma questão de saúde, dedique um momento de oração específica e concreta por essa cura hoje.",
+      "oracao": "Senhor, Tu és o Deus que cura. Coloco diante de Ti minha saúde e a saúde daqueles que amo, e creio no Teu poder restaurador. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 22,
+      "semana_tema": "Cura Divina",
+      "titulo": "Cura das Feridas do Pai",
+      "referencia_biblica": "Salmos 27:10",
+      "texto_base": "Quando meu pai e minha mãe me deixarem, o Senhor me recolherá.",
+      "reflexao": "Muitos homens carregam feridas de uma paternidade ausente, dura ou distante, e essas feridas moldam silenciosamente como tratam esposa e filhos hoje. A cura divina alcança também o coração. Reconhecer essa ferida diante de Deus, ao invés de reprimi-la, é o primeiro passo para que ela pare de ditar seu comportamento.",
+      "desafio_pratico": "Se apropriado, escreva uma carta (que pode nunca ser enviada) processando o que você sente em relação ao seu pai — como forma de trazer essa ferida à luz diante de Deus.",
+      "oracao": "Senhor, Tu és o Pai que nunca me abandona. Cura as feridas que carrego da minha paternidade terrena e ensina-me a ser um pai melhor por causa disso. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 23,
+      "semana_tema": "Cura Divina",
+      "titulo": "Cura no Casamento",
+      "referencia_biblica": "Eclesiastes 4:12",
+      "texto_base": "O cordão de três dobras não se rompe facilmente.",
+      "reflexao": "Casamentos se desgastam pelo acúmulo de mágoas não resolvidas, silêncios prolongados e distância emocional. A cura divina também opera nos relacionamentos — mas geralmente exige um passo de humildade de quem busca essa restauração: pedir perdão primeiro, iniciar a conversa difícil, buscar ajuda quando necessário. Um casamento com Cristo no centro (o cordão de três dobras) tem uma força que dois sozinhos não têm.",
+      "desafio_pratico": "Se há uma tensão não resolvida no seu casamento, dê o primeiro passo hoje: uma conversa honesta, um pedido de desculpas ou uma oração em conjunto com sua esposa.",
+      "oracao": "Senhor, restaura o que está ferido no meu casamento. Coloca-Te no centro da nossa relação e me dá humildade para dar o primeiro passo. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 24,
+      "semana_tema": "Cura Divina",
+      "titulo": "Cura da Ansiedade e da Sobrecarga",
+      "referencia_biblica": "1 Pedro 5:7",
+      "texto_base": "Lançando sobre ele toda a vossa ansiedade, porque ele tem cuidado de vós.",
+      "reflexao": "A cultura ensina o homem a carregar tudo sozinho — provisão, proteção, resultados — como se pedir ajuda fosse fraqueza. Isso adoece corpo e mente. A cura divina inclui a permissão para entregar essa carga a Deus, e também para buscar apoio de irmãos e, quando necessário, de profissionais de saúde mental. Força verdadeira não é carregar tudo sozinho; é saber a quem entregar o peso.",
+      "desafio_pratico": "Nomeie hoje, especificamente, o que está pesando mais sobre você agora e entregue isso a Deus em oração, considerando também compartilhar com alguém de confiança.",
+      "oracao": "Senhor, eu Te entrego hoje as ansiedades que carrego sozinho. Ensina-me a descansar em Ti e a buscar apoio quando preciso. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 25,
+      "semana_tema": "Cura Divina",
+      "titulo": "Restauração Depois da Queda",
+      "referencia_biblica": "Joel 2:25",
+      "texto_base": "Restituir-vos-ei os anos que foram comidos pela lagarta.",
+      "reflexao": "Todo homem tem anos que gostaria de recuperar: tempo perdido em vícios, oportunidades desperdiçadas, relacionamentos danificados por más decisões. A promessa de Deus não é apenas perdão, mas restauração — Ele pode usar até os anos perdidos para gerar sabedoria, testemunho e um novo propósito. Nenhuma queda é maior que a graça restauradora de Deus.",
+      "desafio_pratico": "Reflita em um período da sua vida que você considera 'perdido' e ore pedindo a Deus para transformar essa experiência em algo que sirva de testemunho a outros.",
+      "oracao": "Senhor, creio que Tu podes restituir os anos que a lagarta comeu na minha vida. Transforma minha história de queda em testemunho da Tua graça. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 26,
+      "semana_tema": "Cura Divina",
+      "titulo": "Fé que Ativa a Cura",
+      "referencia_biblica": "Marcos 5:34",
+      "texto_base": "Filha, a tua fé te salvou; vai-te em paz.",
+      "reflexao": "A mulher com hemorragia buscou Jesus com uma fé simples, mas firme: apenas tocar a orla do manto. Jesus não elogiou a estratégia dela, elogiou a fé. Isso ensina que cura divina não depende de fórmulas complicadas, mas de uma fé genuína dirigida à pessoa certa: Jesus. Você não precisa ter todas as respostas teológicas; precisa se aproximar Dele com o que tem.",
+      "desafio_pratico": "Traga a Deus hoje, sem rodeios, uma necessidade concreta de cura (física, emocional ou espiritual) e ore com simplicidade e fé, como quem apenas toca a orla do manto.",
+      "oracao": "Senhor, assim como a mulher que tocou a Tua veste, eu me aproximo de Ti hoje com fé simples. Cura-me e restaura-me segundo a Tua vontade. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 27,
+      "semana_tema": "A Volta de Cristo",
+      "titulo": "Vivendo em Expectativa",
+      "referencia_biblica": "Tito 2:13",
+      "texto_base": "Aguardando a bendita esperança e o aparecimento da glória do nosso grande Deus e Salvador, Jesus Cristo.",
+      "reflexao": "A doutrina da volta de Cristo não é um assunto para especular sobre datas, mas um convite a viver com propósito e urgência santa. Um homem que vive esperando o retorno de Cristo trata o tempo, o dinheiro e os relacionamentos de forma diferente — porque sabe que sua vida aqui é temporária e que há contas a prestar diante de um Deus que vem.",
+      "desafio_pratico": "Pergunte-se hoje: 'Se Cristo voltasse esta semana, o que eu mudaria imediatamente na minha rotina?' Comece a mudar isso agora.",
+      "oracao": "Senhor, ensina-me a viver com expectativa da Tua volta. Que essa esperança molde minhas prioridades e o uso do meu tempo. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 28,
+      "semana_tema": "A Volta de Cristo",
+      "titulo": "O Legado que Você Deixa",
+      "referencia_biblica": "Salmos 78:4",
+      "texto_base": "Não os encobriremos a seus filhos... para que a geração vindoura os conheça.",
+      "reflexao": "Um homem que vive com a eternidade em vista pensa além da própria geração. O que você está transmitindo aos seus filhos, netos ou aos jovens que lidera? Legado não é herança material apenas, é caráter, fé e valores repassados de forma intencional. A volta de Cristo lembra que sua vida é parte de uma história maior, que continua depois de você.",
+      "desafio_pratico": "Escreva ou converse hoje com um filho, sobrinho ou jovem próximo sobre algo espiritual que você deseja que ele carregue para a vida.",
+      "oracao": "Senhor, ajuda-me a deixar um legado de fé para a próxima geração. Que minha vida testemunhe de Ti muito depois de eu partir. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 29,
+      "semana_tema": "A Volta de Cristo",
+      "titulo": "Fiel até o Fim",
+      "referencia_biblica": "Mateus 25:21",
+      "texto_base": "Muito bem, servo bom e fiel... entra no gozo do teu senhor.",
+      "reflexao": "A parábola dos talentos não elogia o servo mais talentoso, mas o mais fiel com o que recebeu. Isso é um alívio para quem sente que não tem 'grandes' talentos, e uma exortação para quem tem muito e administra pouco. Deus não vai perguntar quanto você acumulou, mas o que você fez com o que Ele confiou a você — tempo, dinheiro, dons, relacionamentos.",
+      "desafio_pratico": "Avalie honestamente uma área (finanças, tempo, dons) em que você tem sido pouco fiel na mordomia do que Deus lhe confiou, e defina um passo concreto de mudança.",
+      "oracao": "Senhor, quero ouvir de Ti: 'servo bom e fiel'. Ajuda-me a administrar bem tudo o que confiaste a mim. Em nome de Jesus, amém."
+    },
+    {
+      "dia": 30,
+      "semana_tema": "A Volta de Cristo",
+      "titulo": "Comissionado para a Missão",
+      "referencia_biblica": "Mateus 28:19-20",
+      "texto_base": "Ide, portanto, fazei discípulos de todas as nações... e eis que estou convosco todos os dias.",
+      "reflexao": "Ao final destes 30 dias, a pergunta não é apenas 'o que eu aprendi', mas 'o que eu vou fazer com isso'. O Evangelho Pleno não termina em experiência pessoal — ele se completa em missão. Você foi salvo, está sendo santificado, foi capacitado pelo Espírito e experimenta a cura de Deus para, então, ser enviado: ao seu lar, ao seu trabalho, aos seus amigos. A promessa final não é conforto, é companhia: 'estou convosco todos os dias'.",
+      "desafio_pratico": "Defina um compromisso concreto para os próximos 30 dias: discipular alguém, se envolver mais na igreja, restaurar um relacionamento ou compartilhar sua fé com regularidade. Escreva esse compromisso e comprometa-se com Deus a cumpri-lo.",
+      "oracao": "Senhor, obrigado por esses 30 dias de renovação. Envia-me agora como Teu discípulo e testemunha, sabendo que estás comigo todos os dias, até a Tua volta. Em nome de Jesus, amém."
+    }
+  ]
+}

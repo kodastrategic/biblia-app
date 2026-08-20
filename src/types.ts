@@ -27,3 +27,23 @@ export interface BookMark {
 }
 
 export type ReadingProgress = Record<string, number[]>;
+
+export interface DevocionalDia {
+  dia: number;
+  semana_tema: string;
+  titulo: string;
+  referencia_biblica: string;
+  texto_base: string;
+  reflexao: string;
+  desafio_pratico: string;
+  oracao: string;
+}
+
+export interface Devocional {
+  titulo: string;
+  subtitulo: string;
+  publico_alvo: string;
+  introducao: string;
+  estrutura_do_devocional: string[];
+  dias: DevocionalDia[];
+}

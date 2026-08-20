@@ -1,14 +1,20 @@
 import { BookOpen } from 'lucide-react';
-import type { BookMark } from '../../types';
+import type { BookMark, DevocionalDia } from '../../types';
 import { Button } from '../ui/Button';
 import { ProgressCard } from './ProgressCard';
 import { FeedCard } from './FeedCard';
+import { DevocionalCard } from './DevocionalCard';
 
 interface HomeViewProps {
   marks: BookMark[];
   percentage: number;
   countRead: number;
   userName?: string;
+  devocionalCurrentDay: number;
+  devocionalTotalDays: number;
+  devocionalDay: DevocionalDia | null;
+  devocionalIsComplete: boolean;
+  onOpenDevocional: () => void;
   onOpenLibrary: () => void;
   onOpenMarks: () => void;
 }
@@ -18,6 +24,11 @@ export function HomeView({
   percentage,
   countRead,
   userName,
+  devocionalCurrentDay,
+  devocionalTotalDays,
+  devocionalDay,
+  devocionalIsComplete,
+  onOpenDevocional,
   onOpenLibrary,
   onOpenMarks,
 }: HomeViewProps) {
@@ -40,6 +51,16 @@ export function HomeView({
           Ir para um capítulo
         </Button>
       </section>
+
+      <div className="mb-6 md:mb-8">
+        <DevocionalCard
+          currentDay={devocionalCurrentDay}
+          totalDays={devocionalTotalDays}
+          day={devocionalDay}
+          isComplete={devocionalIsComplete}
+          onOpen={onOpenDevocional}
+        />
+      </div>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
         <ProgressCard percentage={percentage} countRead={countRead} userName={userName} />

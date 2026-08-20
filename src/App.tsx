@@ -2,11 +2,13 @@ import { useMemo, useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import type { BookMark } from './types';
 import { BOOKS, getBook } from './data/books';
+import { DEVOCIONAL_TOTAL_DAYS, getDevocionalDay } from './data/devocional';
 import { getDayOfYear, getReadingForDay } from './lib/readingPlan';
 import { createMark } from './lib/marks';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useReadingProgress } from './hooks/useReadingProgress';
 import { useMarks } from './hooks/useMarks';
+import { useDevotionalProgress } from './hooks/useDevotionalProgress';
 import { AppShell, type View } from './components/layout/AppShell';
 import { HomeView } from './components/home/HomeView';
 import { BibleView } from './components/bible/BibleView';
@@ -14,6 +16,7 @@ import { ReaderModal } from './components/modals/ReaderModal';
 import { LibraryModal } from './components/modals/LibraryModal';
 import { MarksModal } from './components/modals/MarksModal';
 import { SettingsModal } from './components/modals/SettingsModal';
+import { DevocionalModal } from './components/modals/DevocionalModal';
 
 export default function App() {
   const [view, setView] = useState<View>('home');
@@ -21,13 +24,17 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [marksOpen, setMarksOpen] = useState(false);
+  const [devocionalOpen, setDevocionalOpen] = useState(false);
   const [reader, setReader] = useState<{ book: string; chapter: number; totalChapters: number } | null>(null);
   const [userName, setUserName] = useLocalStorage('bibleUserName', '');
 
   const { progress, toggleChapter, isChapterRead, countRead, percentage } = useReadingProgress();
   const { marks, addMark, removeMark } = useMarks();
+  const { currentDay: devocionalDay, isComplete: devocionalIsComplete, completeDay } =
+    useDevotionalProgress();
 
   const dailyReading = useMemo(() => getReadingForDay(selectedDay), [selectedDay]);
+  const devocionalDayData = useMemo(() => getDevocionalDay(devocionalDay), [devocionalDay]);
 
   const openReader = (bookName: string, chapter: number) => {
     const info = getBook(bookName);
@@ -69,6 +76,11 @@ export default function App() {
             percentage={percentage}
             countRead={countRead}
             userName={userName}
+            devocionalCurrentDay={devocionalDay}
+            devocionalTotalDays={DEVOCIONAL_TOTAL_DAYS}
+            devocionalDay={devocionalDayData}
+            devocionalIsComplete={devocionalIsComplete}
+            onOpenDevocional={() => setDevocionalOpen(true)}
             onOpenLibrary={() => setLibraryOpen(true)}
             onOpenMarks={() => setMarksOpen(true)}
           />
@@ -116,6 +128,12 @@ export default function App() {
         isChapterRead={isChapterRead}
         onMarkAsRead={(b, c) => handleToggleChapter(b, c)}
         onAddMark={handleAddMark}
+      />
+      <DevocionalModal
+        open={devocionalOpen}
+        onClose={() => setDevocionalOpen(false)}
+        initialDay={devocionalDay}
+        onCompleteDay={completeDay}
       />
     </>
   );
