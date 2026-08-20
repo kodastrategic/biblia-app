@@ -69,7 +69,7 @@ export default function App() {
             percentage={percentage}
             countRead={countRead}
             userName={userName}
-            onOpenBible={() => setView('bible')}
+            onOpenLibrary={() => setLibraryOpen(true)}
             onOpenMarks={() => setMarksOpen(true)}
           />
         ) : (

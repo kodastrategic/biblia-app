@@ -27,8 +27,8 @@ export function MarksModal({ open, onClose, marks, onRemoveMark, onOpenMark }: M
             <div className="flex flex-col items-center justify-center text-center py-16">
               <Quote className="w-10 h-10 text-dim mb-4" />
               <p className="text-sm text-muted max-w-xs leading-relaxed">
-                Nenhum texto marcado ainda. Na Bíblia, selecione um trecho e toque em{' '}
-                <span className="text-brand font-semibold">marcar texto</span>.
+                Nenhum texto marcado ainda. Na Bíblia, selecione um trecho e toque no{' '}
+                <span className="text-red-400 font-semibold">coração</span>.
               </p>
             </div>
           ) : (

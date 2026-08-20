@@ -9,7 +9,7 @@ interface HomeViewProps {
   percentage: number;
   countRead: number;
   userName?: string;
-  onOpenBible: () => void;
+  onOpenLibrary: () => void;
   onOpenMarks: () => void;
 }
 
@@ -18,7 +18,7 @@ export function HomeView({
   percentage,
   countRead,
   userName,
-  onOpenBible,
+  onOpenLibrary,
   onOpenMarks,
 }: HomeViewProps) {
   return (
@@ -35,15 +35,15 @@ export function HomeView({
           Quando a Palavra ocupa um lugar diário na rotina, o entendimento é ampliado e a paz se
           torna o alicerce de cada decisão.
         </p>
-        <Button size="lg" onClick={onOpenBible}>
+        <Button size="lg" onClick={onOpenLibrary}>
           <BookOpen className="w-5 h-5" />
-          Abrir Bíblia
+          Ir para um capítulo
         </Button>
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
         <ProgressCard percentage={percentage} countRead={countRead} userName={userName} />
-        <FeedCard marks={marks} onOpenMarks={onOpenMarks} onOpenBible={onOpenBible} />
+        <FeedCard marks={marks} onOpenMarks={onOpenMarks} onOpenLibrary={onOpenLibrary} />
       </section>
     </div>
   );

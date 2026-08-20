@@ -6,10 +6,10 @@ import { markReference } from '../../lib/marks';
 interface FeedCardProps {
   marks: BookMark[];
   onOpenMarks: () => void;
-  onOpenBible: () => void;
+  onOpenLibrary: () => void;
 }
 
-export function FeedCard({ marks, onOpenMarks, onOpenBible }: FeedCardProps) {
+export function FeedCard({ marks, onOpenMarks, onOpenLibrary }: FeedCardProps) {
   const [index, setIndex] = useState(0);
   const [swapKey, setSwapKey] = useState(0);
 
@@ -39,18 +39,18 @@ export function FeedCard({ marks, onOpenMarks, onOpenBible }: FeedCardProps) {
         <div className="relative flex flex-col items-center justify-center text-center py-8">
           <Quote className="w-8 h-8 text-dim mb-4" />
           <p className="text-sm text-muted leading-relaxed max-w-xs">
-            Ainda não há textos marcados. Selecione um versículo na Bíblia e toque em{' '}
-            <span className="text-brand font-semibold">marcar</span> para guardá-lo aqui.
+            Ainda não há textos marcados. Na Bíblia, selecione um trecho e toque no{' '}
+            <span className="text-red-400 font-semibold">coração</span> para guardá-lo aqui.
           </p>
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onOpenBible();
+              onOpenLibrary();
             }}
             className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-brand to-accent text-white text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all active:scale-95"
           >
             <BookOpen className="w-4 h-4" />
-            Abrir Bíblia
+            Ir para um capítulo
           </button>
         </div>
       ) : (

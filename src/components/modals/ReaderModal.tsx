@@ -8,7 +8,7 @@ import {
   CheckCircle2,
   Minus,
   Plus,
-  Highlighter,
+  Heart,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { fetchChapter } from '../../lib/bible';
@@ -28,8 +28,6 @@ interface ReaderModalProps {
 interface SelectionInfo {
   text: string;
   verse: number;
-  top: number;
-  left: number;
 }
 
 export function ReaderModal({
@@ -50,6 +48,7 @@ export function ReaderModal({
   const [reloadKey, setReloadKey] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const loadId = useRef(0);
+  const selectionRef = useRef<SelectionInfo | null>(null);
 
   useEffect(() => {
     if (!book) return;
@@ -62,6 +61,7 @@ export function ReaderModal({
     const run = async () => {
       setLoading(true);
       setError(null);
+      selectionRef.current = null;
       setSelection(null);
       try {
         const data = await fetchChapter(book, currentChapter);
@@ -80,46 +80,50 @@ export function ReaderModal({
 
   const isRead = isChapterRead(book, currentChapter);
 
-  const captureSelection = useCallback((e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('[data-mark-action]')) return;
-    const sel = window.getSelection();
-    if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
-      setSelection(null);
-      return;
-    }
-    const text = sel.toString().replace(/\s+/g, ' ').trim();
-    if (!text) {
-      setSelection(null);
-      return;
-    }
-    const range = sel.getRangeAt(0);
-    const node: Node = range.commonAncestorContainer;
-    const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
-    const verseEl = el?.closest('[data-verse]') as HTMLElement | null;
-    const verse = verseEl ? Number(verseEl.dataset.verse) : 0;
-    if (!verse) {
-      setSelection(null);
-      return;
-    }
-    const rect = range.getBoundingClientRect();
-    setSelection({
-      text,
-      verse,
-      top: rect.bottom + 10,
-      left: rect.left + rect.width / 2,
-    });
-  }, []);
+  useEffect(() => {
+    if (!book) return;
+    const handleSelectionChange = () => {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || sel.rangeCount === 0) {
+        selectionRef.current = null;
+        setSelection(null);
+        return;
+      }
+      const text = sel.toString().replace(/\s+/g, ' ').trim();
+      if (!text) {
+        selectionRef.current = null;
+        setSelection(null);
+        return;
+      }
+      const range = sel.getRangeAt(0);
+      const node: Node = range.commonAncestorContainer;
+      const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
+      const verseEl = el?.closest('[data-verse]') as HTMLElement | null;
+      const verse = verseEl ? Number(verseEl.dataset.verse) : 0;
+      if (!verse) {
+        selectionRef.current = null;
+        setSelection(null);
+        return;
+      }
+      selectionRef.current = { text, verse };
+      setSelection({ text, verse });
+    };
+    document.addEventListener('selectionchange', handleSelectionChange);
+    return () => document.removeEventListener('selectionchange', handleSelectionChange);
+  }, [book]);
 
   const clearSelection = useCallback(() => {
+    selectionRef.current = null;
     window.getSelection()?.removeAllRanges();
     setSelection(null);
   }, []);
 
   const handleMark = () => {
-    if (!selection) return;
-    onAddMark(selection.text, book, currentChapter, selection.verse);
-    toast.success('Texto marcado!', {
-      description: `Salvo em marcações · ${book} ${currentChapter}:${selection.verse}`,
+    const current = selectionRef.current;
+    if (!current) return;
+    onAddMark(current.text, book, currentChapter, current.verse);
+    toast.success('Texto favoritado!', {
+      description: `Salvo em marcações · ${book} ${currentChapter}:${current.verse}`,
     });
     clearSelection();
   };
@@ -172,6 +176,24 @@ export function ReaderModal({
               {isRead ? 'LIDO' : 'MARCAR COMO LIDO'}
             </button>
             <button
+              onClick={handleMark}
+              disabled={!selection}
+              title={
+                selection
+                  ? `Favoritar trecho · ${book} ${currentChapter}:${selection.verse}`
+                  : 'Selecione um texto para favoritar'
+              }
+              aria-label="Favoritar trecho selecionado"
+              className={cn(
+                'ml-1 p-2 rounded-xl border transition-all active:scale-95',
+                selection
+                  ? 'text-red-400 border-red-400/30 bg-red-500/10 shadow-[0_0_16px_rgba(248,113,113,0.35)]'
+                  : 'text-dim border-line hover:text-fg hover:bg-white/5 disabled:cursor-not-allowed',
+              )}
+            >
+              <Heart className="w-5 h-5" />
+            </button>
+            <button
               onClick={onClose}
               className="ml-1 p-2 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
               aria-label="Fechar leitor"
@@ -184,7 +206,6 @@ export function ReaderModal({
         {/* Content */}
         <div
           ref={scrollRef}
-          onMouseUp={captureSelection}
           onScroll={clearSelection}
           className="flex-1 overflow-y-auto scrollbar-thin px-5 md:px-14 py-8 md:py-12"
         >
@@ -225,24 +246,6 @@ export function ReaderModal({
             </div>
           )}
         </div>
-
-        {/* Floating mark action */}
-        {selection && (
-          <div
-            data-mark-action
-            className="fixed z-10 -translate-x-1/2"
-            style={{ top: selection.top, left: selection.left }}
-          >
-            <button
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={handleMark}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand to-accent text-white text-sm font-semibold shadow-glow hover:brightness-110 transition-all"
-            >
-              <Highlighter className="w-4 h-4" />
-              Marcar texto
-            </button>
-          </div>
-        )}
 
         {/* Footer */}
         <div className="shrink-0 flex items-center justify-between px-4 md:px-6 py-4 bg-panel border-t border-line">
