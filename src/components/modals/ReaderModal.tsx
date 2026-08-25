@@ -20,6 +20,7 @@ interface ReaderModalProps {
   chapter: number;
   totalChapters: number;
   onClose: () => void;
+  onBack: () => void;
   isChapterRead: (book: string, chapter: number) => boolean;
   onMarkAsRead: (book: string, chapter: number) => void;
   onAddMark: (text: string, book: string, chapter: number, verse: number) => void;
@@ -35,6 +36,7 @@ export function ReaderModal({
   chapter,
   totalChapters,
   onClose,
+  onBack,
   isChapterRead,
   onMarkAsRead,
   onAddMark,
@@ -194,9 +196,9 @@ export function ReaderModal({
               <Heart className="w-5 h-5" />
             </button>
             <button
-              onClick={onClose}
+              onClick={onBack}
               className="ml-1 p-2 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
-              aria-label="Fechar leitor"
+              aria-label="Voltar para biblioteca"
             >
               <X className="w-6 h-6" />
             </button>

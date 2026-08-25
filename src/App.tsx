@@ -46,6 +46,11 @@ export default function App() {
     });
   };
 
+  const handleReaderBack = () => {
+    setReader(null);
+    setLibraryOpen(true);
+  };
+
   const handleToggleChapter = (book: string, chapter: number) => {
     const completedBook = toggleChapter(book, chapter);
     if (completedBook) {
@@ -125,6 +130,7 @@ export default function App() {
         chapter={reader?.chapter ?? 1}
         totalChapters={reader?.totalChapters ?? 1}
         onClose={() => setReader(null)}
+        onBack={handleReaderBack}
         isChapterRead={isChapterRead}
         onMarkAsRead={(b, c) => handleToggleChapter(b, c)}
         onAddMark={handleAddMark}
