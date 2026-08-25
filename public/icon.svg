@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2fa4ff"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60b9ff"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- Book left page -->
+  <path d="M148 130 Q148 118, 160 118 L248 118 Q252 118, 252 122 L252 394 Q252 390, 248 390 L160 390 Q148 390, 148 378 Z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="3"/>
+  <!-- Book right page -->
+  <path d="M364 130 Q364 118, 352 118 L264 118 Q260 118, 260 122 L260 394 Q260 390, 264 390 L352 390 Q364 390, 364 378 Z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="3"/>
+  <!-- Cross on right page -->
+  <rect x="290" y="180" width="14" height="100" rx="4" fill="white" opacity="0.9"/>
+  <rect x="268" y="210" width="60" height="14" rx="4" fill="white" opacity="0.9"/>
+  <!-- Lines on left page -->
+  <rect x="168" y="180" width="64" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="200" width="56" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="220" width="60" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="240" width="48" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="260" width="64" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="280" width="52" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="300" width="60" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="320" width="44" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+  <rect x="168" y="340" width="58" height="5" rx="2" fill="rgba(255,255,255,0.3)"/>
+</svg>
