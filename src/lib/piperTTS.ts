@@ -105,3 +105,11 @@ export async function piperSynthesize(text: string): Promise<{ url: string; dura
   const { file, duration } = await engine.generate(text, PIPER_VOICE_ID, 0);
   return { url: URL.createObjectURL(file), durationMs: duration };
 }
+
+let piperAudio: HTMLAudioElement | null = null;
+
+/** Elemento único reutilizado entre versículos — mantém a sessão de áudio desbloqueada no iOS. */
+export function getPiperAudio(): HTMLAudioElement {
+  if (!piperAudio) piperAudio = new Audio();
+  return piperAudio;
+}

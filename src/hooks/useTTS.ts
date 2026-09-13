@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getVoiceList, isTtsSupported, pickPreferredVoice } from '../lib/tts';
-import { getPiperStatus, onPiperStatusChange, PIPER_VOICE_SENTINEL, piperSynthesize } from '../lib/piperTTS';
+import { getPiperAudio, getPiperStatus, onPiperStatusChange, PIPER_VOICE_SENTINEL, piperSynthesize } from '../lib/piperTTS';
 import { useLocalStorage } from './useLocalStorage';
 
 export type TTSState = 'idle' | 'playing' | 'paused';
@@ -74,28 +74,53 @@ export function useTTS() {
         advanceTo(index + 1, token);
         return;
       }
+
+      let finished = false;
       const finish = (next: number, revokeUrl?: string) => {
+        if (finished) return;
+        finished = true;
         if (revokeUrl) URL.revokeObjectURL(revokeUrl);
         if (tokenRef.current === token) advanceTo(next, token);
       };
-      try {
-        const { url, durationMs } = await piperSynthesize(text);
-        void durationMs;
-        if (tokenRef.current === token) {
-          const audio = new Audio(url);
-          audio.playbackRate = rateRef.current;
-          audio.onended = () => finish(index + 1, url);
-          audio.onerror = () => finish(index + 1, url);
-          try {
-            await audio.play();
-          } catch (err) {
-            finish(index + 1, url);
-          }
-        } else {
-          URL.revokeObjectURL(url);
+
+      let result: { url: string; durationMs: number } | null = null;
+      for (let attempt = 0; attempt < 2 && !result; attempt++) {
+        if (attempt > 0) {
+          await new Promise((r) => window.setTimeout(r, 350));
+          if (tokenRef.current !== token) return;
         }
-      } catch {
+        try {
+          const synth = await piperSynthesize(text);
+          if (synth.durationMs > 0) result = synth;
+        } catch {
+          /* tenta uma vez mais antes de pular */
+        }
+      }
+      if (tokenRef.current !== token) {
+        if (result) URL.revokeObjectURL(result.url);
+        return;
+      }
+      if (!result) {
         finish(index + 1);
+        return;
+      }
+
+      const audio = getPiperAudio();
+      const { url, durationMs } = result;
+      const backstop = window.setTimeout(() => finish(index + 1, url), durationMs + 1200);
+      const onDone = () => {
+        window.clearTimeout(backstop);
+        finish(index + 1, url);
+      };
+      audio.onended = onDone;
+      audio.onerror = onDone;
+      audio.playbackRate = rateRef.current;
+      audio.src = url;
+      try {
+        await audio.play();
+      } catch {
+        window.clearTimeout(backstop);
+        finish(index + 1, url);
       }
     },
     [advanceTo],
@@ -167,6 +192,7 @@ export function useTTS() {
   const pause = useCallback(() => {
     ++tokenRef.current;
     clearGap();
+    getPiperAudio().pause();
     synthRef.current?.cancel();
     setState('paused');
   }, [clearGap]);
@@ -181,6 +207,7 @@ export function useTTS() {
   const stop = useCallback(() => {
     ++tokenRef.current;
     clearGap();
+    getPiperAudio().pause();
     synthRef.current?.cancel();
     sessionRef.current = null;
     verseIndexRef.current = -1;
@@ -192,6 +219,7 @@ export function useTTS() {
     return () => {
       ++tokenRef.current;
       clearGap();
+      getPiperAudio().pause();
       synthRef.current?.cancel();
     };
   }, [clearGap]);

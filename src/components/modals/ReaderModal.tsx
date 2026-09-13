@@ -173,6 +173,14 @@ export function ReaderModal({
     stopTts();
   };
 
+  const handleVerseClick = (index: number) => {
+    if (!verses.length) return;
+    const sel = window.getSelection();
+    if (sel && sel.toString().trim()) return;
+    if (ttsState === 'playing' && activeVerse === index) return;
+    play(verses, index, handleChapterEnd);
+  };
+
   const changeRate = (delta: number) => {
     const next = Math.min(1.6, Math.max(0.6, Math.round((rate + delta) * 10) / 10));
     setRate(next);
@@ -656,9 +664,12 @@ export function ReaderModal({
                   <p
                     key={i}
                     data-verse={i + 1}
+                    onClick={() => handleVerseClick(i)}
+                    title={supported ? 'Ouvir a partir deste versículo' : undefined}
                     className={cn(
                       'mb-3 text-fg/90 rounded-lg px-1 py-0.5 transition-colors',
                       activeVerse === i && 'bg-brand-soft ring-1 ring-brand/40 text-fg',
+                      supported && 'cursor-pointer hover:bg-white/5 active:bg-white/10',
                     )}
                   >
                     <sup className="text-brand font-semibold text-[0.6em] mr-1.5 select-none">
