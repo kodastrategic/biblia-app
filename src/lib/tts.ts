@@ -15,13 +15,53 @@ export function isPortugueseVoice(voice: SpeechSynthesisVoice): boolean {
   return /^pt([-_][a-z]{2,4})?$/i.test(voice.lang.trim());
 }
 
+export type VoiceGender = 'male' | 'female' | 'unknown';
+
+const MALE_TOKENS = [
+  'male', 'masculine', 'masculin', 'masculino',
+  'antonio', 'daniel', 'fabricio', 'felipe', 'fernando', 'humberto',
+  'joaquim', 'julio', 'lucas', 'murilo', 'thiago', 'tulio', 'yuri',
+  'bruno', 'hugo', 'jorge', 'leo', 'vitor', 'eduardo', 'rafael',
+];
+const FEMALE_TOKENS = [
+  'female', 'feminine', 'feminin', 'feminino',
+  'francisca', 'camila', 'elza', 'helena', 'dalva', 'gal', 'nereta',
+  'raquel', 'yara', 'thalita', 'jana', 'leticia', 'paula', 'bella',
+  'luna', 'rosie', 'kiki', 'maria', 'ana', 'sara', 'vitoria', 'manuela',
+];
+
+function normalizeVoiceName(voice: SpeechSynthesisVoice): string {
+  return voice.name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+export function voiceGender(voice: SpeechSynthesisVoice): VoiceGender {
+  const name = normalizeVoiceName(voice);
+  if (MALE_TOKENS.some((t) => name.includes(t))) return 'male';
+  if (FEMALE_TOKENS.some((t) => name.includes(t))) return 'female';
+  return 'unknown';
+}
+
+export function genderMark(gender: VoiceGender): string {
+  if (gender === 'male') return '♂';
+  if (gender === 'female') return '♀';
+  return '';
+}
+
+export const GENDER_ORDER: Record<VoiceGender, number> = { male: 0, female: 1, unknown: 2 };
+
 export function voiceLabel(voice: SpeechSynthesisVoice): string {
   const lang = voice.lang.toLowerCase();
   let locale = lang;
   if (lang === 'pt') locale = 'Português';
   else if (lang.startsWith('pt-br')) locale = 'Português (Brasil)';
   else if (lang.startsWith('pt-pt')) locale = 'Português (Portugal)';
-  return `${voice.name} · ${locale}`;
+  const gender = voiceGender(voice);
+  const genderText =
+    gender === 'male' ? ' · voz masculina' : gender === 'female' ? ' · voz feminina' : '';
+  return `${voice.name} · ${locale}${genderText}`;
 }
 
 function voiceScore(voice: SpeechSynthesisVoice): number {

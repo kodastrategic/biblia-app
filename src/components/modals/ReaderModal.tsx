@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 import { fetchChapter } from '../../lib/bible';
 import { cn } from '../../lib/cn';
 import { TRANSLATIONS, getTranslation } from '../../data/translations';
-import { isPortugueseVoice, rankVoices, voiceLabel } from '../../lib/tts';
+import { isPortugueseVoice, rankVoices, voiceGender, voiceLabel, GENDER_ORDER, genderMark } from '../../lib/tts';
 import { useTTS } from '../../hooks/useTTS';
 import { Modal } from '../ui/Modal';
 
@@ -99,7 +99,11 @@ export function ReaderModal({
   const [voiceOpen, setVoiceOpen] = useState(false);
   const pendingAdvanceRef = useRef<number | null>(null);
 
-  const ptVoices = useMemo(() => rankVoices(ttsVoices.filter(isPortugueseVoice)), [ttsVoices]);
+  const ptVoices = useMemo(() => {
+    return rankVoices(ttsVoices.filter(isPortugueseVoice)).sort(
+      (a, b) => GENDER_ORDER[voiceGender(a)] - GENDER_ORDER[voiceGender(b)],
+    );
+  }, [ttsVoices]);
 
   useEffect(() => {
     if (!book) return;
@@ -489,7 +493,12 @@ export function ReaderModal({
                   >
                     <Volume2 className="w-4 h-4 text-brand shrink-0" />
                     <span className="text-[11px] font-semibold text-fg truncate">
-                      {ptVoices.find((v) => v.voiceURI === voiceURI)?.name ?? 'Voz automática'}
+                      {(() => {
+                        const selected = ptVoices.find((v) => v.voiceURI === voiceURI);
+                        return selected
+                          ? `${genderMark(voiceGender(selected)) ? `${genderMark(voiceGender(selected))} ` : ''}${selected.name}`
+                          : 'Voz automática';
+                      })()}
                     </span>
                     <ChevronDown
                       className={cn('w-3.5 h-3.5 text-muted shrink-0 transition-transform', voiceOpen && 'rotate-180')}
@@ -530,6 +539,7 @@ export function ReaderModal({
                             >
                               <span className="min-w-0">
                                 <span className="block text-xs font-semibold text-fg truncate">
+                                  <span className="text-dim">{genderMark(voiceGender(v))}</span>{' '}
                                   {v.name}
                                 </span>
                                 <span className="block text-[10px] text-dim mt-0.5">
