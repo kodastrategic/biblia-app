@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
-import { User, Save, BookOpenText, Check } from 'lucide-react';
+import { User, Save, BookOpenText, Check, Moon, Sun, CalendarRange, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { TOTAL_CHAPTERS } from '../../data/books';
 import { TRANSLATIONS, getTranslation } from '../../data/translations';
+import type { ReadingPlanConfig } from '../../lib/readingPlan';
 import { Modal, ModalHeader } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { cn } from '../../lib/cn';
+import { ReadingPlanModal } from './ReadingPlanModal';
+
+type Theme = 'dark' | 'light';
 
 interface SettingsModalProps {
   open: boolean;
@@ -14,6 +18,13 @@ interface SettingsModalProps {
   onUserNameChange: (name: string) => void;
   translationId: string;
   onTranslationChange: (id: string) => void;
+  theme: Theme;
+  onThemeChange: (theme: Theme) => void;
+  planConfig: ReadingPlanConfig;
+  onPlanConfigChange: (config: ReadingPlanConfig) => void;
+  readChapters: Record<string, Set<number>>;
+  percentage: number;
+  planLabel: string;
 }
 
 export function SettingsModal({
@@ -23,8 +34,16 @@ export function SettingsModal({
   onUserNameChange,
   translationId,
   onTranslationChange,
+  theme,
+  onThemeChange,
+  planConfig,
+  onPlanConfigChange,
+  readChapters,
+  percentage,
+  planLabel,
 }: SettingsModalProps) {
   const [tempName, setTempName] = useState(userName);
+  const [planOpen, setPlanOpen] = useState(false);
 
   useEffect(() => {
     if (open) setTempName(userName);
@@ -73,6 +92,40 @@ export function SettingsModal({
 
           <div className="space-y-3">
             <span className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted">
+              {theme === 'dark' ? <Moon className="w-3.5 h-3.5 text-brand" /> : <Sun className="w-3.5 h-3.5 text-brand" />}
+              Aparência
+            </span>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => onThemeChange('dark')}
+                className={cn(
+                  'flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
+                  theme === 'dark'
+                    ? 'border-brand/50 bg-brand-soft text-brand'
+                    : 'border-line bg-white/5 text-fg/80 hover:border-brand/30',
+                )}
+              >
+                <Moon className="w-4 h-4" />
+                Escuro
+              </button>
+              <button
+                onClick={() => onThemeChange('light')}
+                className={cn(
+                  'flex items-center justify-center gap-2 px-4 py-3 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
+                  theme === 'light'
+                    ? 'border-brand/50 bg-brand-soft text-brand'
+                    : 'border-line bg-white/5 text-fg/80 hover:border-brand/30',
+                )}
+              >
+                <Sun className="w-4 h-4" />
+                Claro
+              </button>
+            </div>
+            <p className="text-xs text-dim italic">Escolha o visual da interface do app.</p>
+          </div>
+
+          <div className="space-y-3">
+            <span className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted">
               <BookOpenText className="w-3.5 h-3.5 text-brand" />
               Tradução da Bíblia
             </span>
@@ -116,6 +169,25 @@ export function SettingsModal({
             </p>
           </div>
 
+          <div className="space-y-3">
+            <span className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted">
+              <CalendarRange className="w-3.5 h-3.5 text-brand" />
+              Plano de Leitura
+            </span>
+            <button
+              onClick={() => setPlanOpen(true)}
+              className="w-full flex items-center justify-between gap-3 px-4 py-3.5 rounded-xl border border-line bg-white/5 hover:border-brand/30 transition-all active:scale-[0.99]"
+            >
+              <span className="min-w-0 text-left">
+                <span className="block text-sm font-semibold text-fg">{planLabel}</span>
+                <span className="block text-[11px] text-dim mt-0.5">
+                  Configure quantos capítulos por dia ou um prazo para ler a Bíblia.
+                </span>
+              </span>
+              <ChevronRight className="w-4 h-4 text-muted shrink-0" />
+            </button>
+          </div>
+
           <Button className="w-full" onClick={handleSave}>
             <Save className="w-4 h-4" />
             Salvar Alterações
@@ -125,7 +197,7 @@ export function SettingsModal({
             <div className="p-4 rounded-xl border border-line bg-panel/60">
               <p className="text-xs text-muted uppercase tracking-wider mb-2">Pré-visualização</p>
               <p className="text-lg font-serif text-gradient-brand">
-                {tempName.trim().toUpperCase()}, VOCÊ JÁ LEU 0%
+                {tempName.trim().toUpperCase()}, VOCÊ JÁ LEU {percentage}%
               </p>
             </div>
           )}
@@ -148,12 +220,20 @@ export function SettingsModal({
             <div className="space-y-2 text-sm">
               <StatRow label="Total de livros" value="66 livros" />
               <StatRow label="Total de capítulos" value={`${TOTAL_CHAPTERS.toLocaleString('pt-BR')} capítulos`} />
-              <StatRow label="Plano de leitura" value="365 dias" />
+              <StatRow label="Plano de leitura" value={planLabel} />
               <StatRow label="Traduções disponíveis" value={`${TRANSLATIONS.length} versões`} />
             </div>
           </div>
         </div>
       </div>
+
+      <ReadingPlanModal
+        open={planOpen}
+        onClose={() => setPlanOpen(false)}
+        config={planConfig}
+        readChapters={readChapters}
+        onSave={onPlanConfigChange}
+      />
     </Modal>
   );
 }

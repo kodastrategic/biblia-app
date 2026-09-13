@@ -31,9 +31,9 @@ export function FeedCard({ marks, onOpenMarks, onOpenLibrary }: FeedCardProps) {
   return (
     <div
       onClick={onOpenMarks}
-      className="relative overflow-hidden rounded-3xl border border-line bg-panel/80 backdrop-blur-md p-6 md:p-8 shadow-card cursor-pointer group transition-all hover:border-brand/40"
+      className="relative overflow-hidden clip-card rounded-3xl border border-line bg-panel/80 backdrop-blur-md p-6 md:p-8 shadow-card cursor-pointer group transition-all hover:border-brand/40"
     >
-      <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-accent/15 blur-3xl" />
+      <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.25)_0%,transparent_70%)]" />
 
       {!mark ? (
         <div className="relative flex flex-col items-center justify-center text-center py-8">

@@ -1,9 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import type { BookMark } from './types';
 import { BOOKS, getBook } from './data/books';
 import { DEVOCIONAL_TOTAL_DAYS, getDevocionalDay } from './data/devocional';
-import { getDayOfYear, getReadingForDay } from './lib/readingPlan';
+import {
+  getCurrentPlanDay,
+  getPlanStats,
+  getReadingForPlanDay,
+  type ReadingPlanConfig,
+  DEFAULT_PLAN,
+} from './lib/readingPlan';
 import { createMark } from './lib/marks';
 import { DEFAULT_TRANSLATION, getTranslation } from './data/translations';
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -19,9 +25,11 @@ import { MarksModal } from './components/modals/MarksModal';
 import { SettingsModal } from './components/modals/SettingsModal';
 import { DevocionalModal } from './components/modals/DevocionalModal';
 
+type Theme = 'dark' | 'light';
+
 export default function App() {
   const [view, setView] = useState<View>('home');
-  const [selectedDay, setSelectedDay] = useState(getDayOfYear);
+  const [selectedDay, setSelectedDay] = useState(1);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [marksOpen, setMarksOpen] = useState(false);
@@ -29,15 +37,43 @@ export default function App() {
   const [reader, setReader] = useState<{ book: string; chapter: number; totalChapters: number } | null>(null);
   const [userName, setUserName] = useLocalStorage('bibleUserName', '');
   const [translationId, setTranslationId] = useLocalStorage('bibleTranslation', DEFAULT_TRANSLATION);
+  const [theme, setTheme] = useLocalStorage<Theme>('bibleTheme', 'dark');
+  const [planConfig, setPlanConfig] = useLocalStorage<ReadingPlanConfig>('bibleReadingPlan', DEFAULT_PLAN);
   const translation = useMemo(() => getTranslation(translationId), [translationId]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#f4f6fa' : '#2fa4ff');
+  }, [theme]);
 
   const { progress, toggleChapter, isChapterRead, countRead, percentage } = useReadingProgress();
   const { marks, addMark, removeMark } = useMarks();
   const { currentDay: devocionalDay, isComplete: devocionalIsComplete, completeDay } =
     useDevotionalProgress();
 
-  const dailyReading = useMemo(() => getReadingForDay(selectedDay), [selectedDay]);
+  const planStats = useMemo(() => getPlanStats(planConfig, progress), [planConfig, progress]);
+  const currentPlanDay = useMemo(
+    () => getCurrentPlanDay(planConfig, progress, countRead),
+    [planConfig, progress, countRead],
+  );
+
+  useEffect(() => {
+    setSelectedDay(currentPlanDay);
+  }, [currentPlanDay]);
+
+  const safeSelectedDay = Math.max(1, Math.min(selectedDay, Math.max(1, planStats.totalDays)));
+
+  const dailyReading = useMemo(
+    () => getReadingForPlanDay(safeSelectedDay, planConfig, progress),
+    [safeSelectedDay, planConfig, progress],
+  );
   const devocionalDayData = useMemo(() => getDevocionalDay(devocionalDay), [devocionalDay]);
+
+  const planLabel =
+    planConfig.mode === 'chapters'
+      ? `${Math.max(1, planConfig.chaptersPerDay)} cap/dia`
+      : `${planConfig.periodDays} dias`;
 
   const openReader = (bookName: string, chapter: number) => {
     const info = getBook(bookName);
@@ -72,7 +108,7 @@ export default function App() {
 
   return (
     <>
-      <Toaster position="top-center" theme="dark" richColors />
+      <Toaster position="top-center" theme={theme} richColors />
       <AppShell
         view={view}
         onNavigate={setView}
@@ -83,6 +119,7 @@ export default function App() {
             marks={marks}
             percentage={percentage}
             countRead={countRead}
+            planLabel={planLabel}
             userName={userName}
             devocionalCurrentDay={devocionalDay}
             devocionalTotalDays={DEVOCIONAL_TOTAL_DAYS}
@@ -97,7 +134,10 @@ export default function App() {
             userName={userName}
             percentage={percentage}
             countRead={countRead}
-            selectedDay={selectedDay}
+            selectedDay={safeSelectedDay}
+            totalDays={planStats.totalDays}
+            planDay={currentPlanDay}
+            chaptersPerDay={planStats.chaptersPerDay}
             onDayChange={setSelectedDay}
             dailyReading={dailyReading}
             progress={progress}
@@ -115,6 +155,13 @@ export default function App() {
         onUserNameChange={setUserName}
         translationId={translationId}
         onTranslationChange={setTranslationId}
+        theme={theme}
+        onThemeChange={setTheme}
+        planConfig={planConfig}
+        onPlanConfigChange={setPlanConfig}
+        readChapters={progress}
+        percentage={percentage}
+        planLabel={planLabel}
       />
       <LibraryModal
         open={libraryOpen}

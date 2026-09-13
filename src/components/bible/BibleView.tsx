@@ -10,6 +10,9 @@ interface BibleViewProps {
   percentage: number;
   countRead: number;
   selectedDay: number;
+  totalDays: number;
+  planDay: number;
+  chaptersPerDay: number;
   onDayChange: (day: number) => void;
   dailyReading: DailyReading | null;
   progress: Record<string, Set<number>>;
@@ -23,6 +26,9 @@ export function BibleView({
   percentage,
   countRead,
   selectedDay,
+  totalDays,
+  planDay,
+  chaptersPerDay,
   onDayChange,
   dailyReading,
   progress,
@@ -48,6 +54,9 @@ export function BibleView({
         <div className="mb-12 md:mb-16">
           <DailyReadingCard
             currentDay={selectedDay}
+            totalDays={totalDays}
+            planDay={planDay}
+            chaptersPerDay={chaptersPerDay}
             dailyReading={dailyReading}
             onDayChange={onDayChange}
             readChapters={progress}

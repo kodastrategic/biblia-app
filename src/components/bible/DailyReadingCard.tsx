@@ -5,6 +5,9 @@ import { cn } from '../../lib/cn';
 
 interface DailyReadingCardProps {
   currentDay: number;
+  totalDays: number;
+  planDay: number;
+  chaptersPerDay: number;
   dailyReading: DailyReading;
   onDayChange: (day: number) => void;
   readChapters: Record<string, Set<number>>;
@@ -14,6 +17,9 @@ interface DailyReadingCardProps {
 
 export function DailyReadingCard({
   currentDay,
+  totalDays,
+  planDay,
+  chaptersPerDay,
   dailyReading,
   onDayChange,
   readChapters,
@@ -31,8 +37,8 @@ export function DailyReadingCard({
   const isDayComplete = dayProgress === 100;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-brand/10 via-panel to-accent/10 backdrop-blur-md p-5 md:p-8 shadow-card">
-      <div className="absolute -top-24 -right-20 w-72 h-72 rounded-full bg-brand/10 blur-3xl" />
+    <div className="relative overflow-hidden clip-card rounded-3xl border border-line bg-gradient-to-br from-brand/10 via-panel to-accent/10 backdrop-blur-md p-5 md:p-8 shadow-card">
+      <div className="absolute -top-24 -right-20 w-72 h-72 rounded-full bg-[radial-gradient(circle_at_center,rgba(47,164,255,0.18)_0%,transparent_70%)]" />
 
       <div className="relative">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -42,9 +48,17 @@ export function DailyReadingCard({
             </div>
             <div>
               <h3 className="text-xs uppercase tracking-wider text-muted">Leitura do Dia</h3>
-              <p className="text-lg font-semibold text-fg">
-                Dia {currentDay} <span className="text-muted font-normal">de 365</span>
+              <p className="text-lg font-semibold text-fg flex items-center gap-2">
+                Dia {currentDay} <span className="text-muted font-normal">de {totalDays}</span>
+                {currentDay === planDay && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-brand-soft border border-brand/30 text-[10px] font-bold uppercase tracking-wider text-brand">
+                    Hoje
+                  </span>
+                )}
               </p>
+              {chaptersPerDay > 1 && (
+                <p className="text-[11px] text-dim">Plano: {chaptersPerDay} capítulos por dia</p>
+              )}
             </div>
           </div>
 
@@ -61,8 +75,8 @@ export function DailyReadingCard({
               Dia {currentDay}
             </span>
             <button
-              onClick={() => onDayChange(Math.min(365, currentDay + 1))}
-              disabled={currentDay === 365}
+              onClick={() => onDayChange(Math.min(totalDays, currentDay + 1))}
+              disabled={currentDay === totalDays}
               className="p-2 rounded-lg border border-line text-muted hover:text-fg hover:bg-white/5 transition-colors disabled:opacity-30 disabled:pointer-events-none"
               aria-label="Próximo dia"
             >

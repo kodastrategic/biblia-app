@@ -154,4 +154,80 @@
     background-clip: text;
     color: transparent;
   }
+
+  /* Clipe de cantos arredondados à prova de vazamento de blur/gradientes */
+  .clip-card {
+    clip-path: inset(0 round 1.5rem);
+  }
+
+  .clip-card-lg {
+    clip-path: inset(0 round 2.5rem);
+  }
+}
+
+/* ===== Tema claro ===== */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --color-ink: #f4f6fa;
+  --color-ink-2: #ffffff;
+  --color-panel: #ffffff;
+  --color-panel-2: #eef1f7;
+  --color-line: rgba(15, 23, 42, 0.12);
+  --color-line-strong: rgba(15, 23, 42, 0.2);
+  --color-fg: #0f172a;
+  --color-muted: #475569;
+  --color-dim: #64748b;
+  --shadow-card: 0 12px 40px -12px rgba(15, 23, 42, 0.16);
+}
+
+:root[data-theme='light'] .text-gradient {
+  background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Preenchimentos que eram branco/preto sobre fundo escuro */
+:root[data-theme='light'] .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.05);
+}
+
+:root[data-theme='light'] .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme='light'] .bg-white\/20 {
+  background-color: rgba(15, 23, 42, 0.12);
+}
+
+:root[data-theme='light'] .bg-white\/\[0\.03\] {
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+:root[data-theme='light'] .bg-white\/\[0\.06\] {
+  background-color: rgba(15, 23, 42, 0.06);
+}
+
+:root[data-theme='light'] .bg-black\/20 {
+  background-color: rgba(15, 23, 42, 0.04);
+}
+
+:root[data-theme='light'] .hover\:bg-white\/5:hover {
+  background-color: rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme='light'] .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.12);
+}
+
+:root[data-theme='light'] .hover\:bg-white\/20:hover {
+  background-color: rgba(15, 23, 42, 0.2);
+}
+
+:root[data-theme='light'] .hover\:bg-white\/\[0\.03\]:hover {
+  background-color: rgba(15, 23, 42, 0.06);
+}
+
+:root[data-theme='light'] .focus-within\:bg-white\/\[0\.06\]:focus-within {
+  background-color: rgba(15, 23, 42, 0.06);
 }

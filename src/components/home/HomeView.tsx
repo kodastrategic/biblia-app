@@ -9,6 +9,7 @@ interface HomeViewProps {
   marks: BookMark[];
   percentage: number;
   countRead: number;
+  planLabel: string;
   userName?: string;
   devocionalCurrentDay: number;
   devocionalTotalDays: number;
@@ -23,6 +24,7 @@ export function HomeView({
   marks,
   percentage,
   countRead,
+  planLabel,
   userName,
   devocionalCurrentDay,
   devocionalTotalDays,
@@ -56,7 +58,7 @@ export function HomeView({
       </div>
 
       <section>
-        <ProgressCard percentage={percentage} countRead={countRead} userName={userName} />
+        <ProgressCard percentage={percentage} countRead={countRead} planLabel={planLabel} userName={userName} />
       </section>
     </div>
   );
