@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   X,
   ChevronLeft,
@@ -10,11 +10,17 @@ import {
   Minus,
   Plus,
   Heart,
+  Play,
+  Pause,
+  Square,
+  Volume2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { fetchChapter } from '../../lib/bible';
 import { cn } from '../../lib/cn';
 import { TRANSLATIONS, getTranslation } from '../../data/translations';
+import { isPortugueseVoice, rankVoices, voiceLabel } from '../../lib/tts';
+import { useTTS } from '../../hooks/useTTS';
 import { Modal } from '../ui/Modal';
 
 interface ReaderModalProps {
@@ -73,10 +79,37 @@ export function ReaderModal({
   const loadId = useRef(0);
   const selectionRef = useRef<SelectionInfo | null>(null);
 
+  const tts = useTTS();
+  const {
+    supported,
+    voices: ttsVoices,
+    state: ttsState,
+    activeVerse,
+    voiceURI,
+    rate,
+    autoAdvance,
+    play,
+    pause: pauseTts,
+    resume: resumeTts,
+    stop: stopTts,
+    setVoiceURI,
+    setRate,
+    setAutoAdvance,
+  } = tts;
+  const [voiceOpen, setVoiceOpen] = useState(false);
+  const pendingAdvanceRef = useRef<number | null>(null);
+
+  const ptVoices = useMemo(() => rankVoices(ttsVoices.filter(isPortugueseVoice)), [ttsVoices]);
+
   useEffect(() => {
     if (!book) return;
-    setCurrentChapter(chapter);
-  }, [book, chapter]);
+    if (currentChapter !== chapter) setCurrentChapter(chapter);
+    stopTts();
+  }, [book, chapter, stopTts]);
+
+  useEffect(() => {
+    if (!book) stopTts();
+  }, [book, stopTts]);
 
   useEffect(() => {
     if (!book) return;
@@ -90,6 +123,10 @@ export function ReaderModal({
         const data = await fetchChapter(book, currentChapter, translationId);
         if (loadId.current !== id) return;
         setVerses(data);
+        if (pendingAdvanceRef.current !== null && pendingAdvanceRef.current === currentChapter) {
+          pendingAdvanceRef.current = null;
+          play(data, 0, handleChapterEnd);
+        }
       } catch (err) {
         if (loadId.current !== id) return;
         setError(err instanceof Error ? err.message : 'Erro ao carregar o capítulo.');
@@ -100,6 +137,72 @@ export function ReaderModal({
     void run();
     scrollRef.current?.scrollTo({ top: 0 });
   }, [book, currentChapter, reloadKey, translationId]);
+
+  const handleChapterEnd = useCallback(() => {
+    if (!autoAdvance) return;
+    if (currentChapter >= totalChapters) return;
+    pendingAdvanceRef.current = currentChapter + 1;
+    setCurrentChapter((c) => (c >= totalChapters ? c : c + 1));
+  }, [autoAdvance, currentChapter, totalChapters]);
+
+  const togglePlayback = () => {
+    if (ttsState === 'playing') {
+      pauseTts();
+      return;
+    }
+    if (ttsState === 'paused') {
+      resumeTts();
+      return;
+    }
+    if (!verses.length) return;
+    play(verses, 0, handleChapterEnd);
+  };
+
+  const handleStopAudio = () => {
+    pendingAdvanceRef.current = null;
+    stopTts();
+  };
+
+  const changeRate = (delta: number) => {
+    const next = Math.min(1.6, Math.max(0.6, Math.round((rate + delta) * 10) / 10));
+    setRate(next);
+    if (ttsState === 'playing' && activeVerse >= 0) {
+      play(verses, activeVerse, handleChapterEnd);
+    }
+  };
+
+  const handleVoicePick = (voiceUri: string | null) => {
+    setVoiceURI(voiceUri);
+    setVoiceOpen(false);
+    if (ttsState === 'playing' && activeVerse >= 0) {
+      play(verses, activeVerse, handleChapterEnd);
+    }
+  };
+
+  const goPrevChapter = () => {
+    pendingAdvanceRef.current = null;
+    stopTts();
+    setCurrentChapter((c) => Math.max(1, c - 1));
+  };
+
+  const goNextChapter = () => {
+    pendingAdvanceRef.current = null;
+    stopTts();
+    setCurrentChapter((c) => Math.min(totalChapters, c + 1));
+  };
+
+  useEffect(() => {
+    if (activeVerse < 0) return;
+    const container = scrollRef.current;
+    if (!container) return;
+    const el = container.querySelector(`[data-verse="${activeVerse + 1}"]`);
+    if (!el) return;
+    const cRect = container.getBoundingClientRect();
+    const vRect = el.getBoundingClientRect();
+    if (vRect.top < cRect.top || vRect.bottom > cRect.bottom) {
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }, [activeVerse]);
 
   const isRead = isChapterRead(book, currentChapter);
 
@@ -155,6 +258,7 @@ export function ReaderModal({
 
   const handleTranslationPick = (id: string) => {
     if (id !== translationId) {
+      stopTts();
       onTranslationChange(id);
       const t = getTranslation(id);
       toast.success('Tradução alterada', {
@@ -306,6 +410,158 @@ export function ReaderModal({
               </button>
             </div>
           </div>
+
+          {/* Linha 3: áudio (TTS) */}
+          {supported && (
+            <div className="flex items-center gap-x-4 gap-y-2 flex-wrap px-4 md:px-6 pb-3.5 pt-3 border-t border-line">
+              <button
+                onClick={togglePlayback}
+                disabled={!verses.length}
+                aria-label={ttsState === 'playing' ? 'Pausar leitura' : 'Ouvir capítulo'}
+                title={ttsState === 'playing' ? 'Pausar' : 'Ouvir este capítulo'}
+                className={cn(
+                  'flex items-center justify-center h-11 rounded-full border transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none',
+                  ttsState === 'playing'
+                    ? 'bg-red-500/15 text-red-400 border-red-400/30'
+                    : 'bg-brand text-ink border-brand/50 shadow-glow px-5',
+                )}
+              >
+                {ttsState === 'playing' ? (
+                  <Pause className="w-5 h-5" />
+                ) : (
+                  <Play className="w-5 h-5 fill-current" />
+                )}
+                {ttsState !== 'playing' && (
+                  <span className="text-xs font-bold tracking-wide">
+                    {ttsState === 'paused' ? 'CONTINUAR' : 'OUVIR'}
+                  </span>
+                )}
+              </button>
+
+              {ttsState !== 'idle' && (
+                <>
+                  <button
+                    onClick={handleStopAudio}
+                    aria-label="Parar áudio"
+                    title="Parar áudio"
+                    className="w-10 h-10 rounded-full border border-line bg-white/5 text-muted hover:text-fg hover:bg-white/10 transition-colors flex items-center justify-center"
+                  >
+                    <Square className="w-3.5 h-3.5 fill-current" />
+                  </button>
+                  <span className="text-[11px] text-muted tabular-nums">
+                    {ttsState === 'paused' ? 'Pausado' : `Lendo versículo ${activeVerse + 1} de ${verses.length}`}
+                  </span>
+                </>
+              )}
+
+              <div className="flex items-center gap-3 ml-auto">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-[10px] uppercase tracking-wider text-dim hidden md:inline">
+                    Veloc.
+                  </span>
+                  <div className="flex items-center gap-0.5 rounded-xl border border-line bg-white/5 p-0.5">
+                    <button
+                      onClick={() => changeRate(-0.1)}
+                      aria-label="Diminuir velocidade"
+                      className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="text-[10px] font-mono text-dim tabular-nums px-0.5 select-none w-9 text-center">
+                      {rate.toFixed(1)}×
+                    </span>
+                    <button
+                      onClick={() => changeRate(0.1)}
+                      aria-label="Aumentar velocidade"
+                      className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <button
+                    onClick={() => setVoiceOpen((o) => !o)}
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-line bg-white/5 hover:border-brand/40 text-left transition-colors max-w-[160px] md:max-w-[220px]"
+                    aria-haspopup="listbox"
+                    aria-expanded={voiceOpen}
+                  >
+                    <Volume2 className="w-4 h-4 text-brand shrink-0" />
+                    <span className="text-[11px] font-semibold text-fg truncate">
+                      {ptVoices.find((v) => v.voiceURI === voiceURI)?.name ?? 'Voz automática'}
+                    </span>
+                    <ChevronDown
+                      className={cn('w-3.5 h-3.5 text-muted shrink-0 transition-transform', voiceOpen && 'rotate-180')}
+                    />
+                  </button>
+
+                  {voiceOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setVoiceOpen(false)} />
+                      <div
+                        role="listbox"
+                        className="absolute right-0 top-full mt-2 z-20 w-72 max-h-72 overflow-y-auto scrollbar-thin rounded-2xl border border-line bg-panel-2 shadow-2xl shadow-black/50 py-1.5 animate-scale-in"
+                      >
+                        <button
+                          role="option"
+                          aria-selected={voiceURI === null}
+                          onClick={() => handleVoicePick(null)}
+                          className={cn(
+                            'w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-left transition-colors',
+                            voiceURI === null ? 'bg-brand-soft' : 'hover:bg-white/5',
+                          )}
+                        >
+                          <span className="text-xs font-semibold text-fg">Voz automática</span>
+                          {voiceURI === null && <Check className="w-3.5 h-3.5 text-brand shrink-0" />}
+                        </button>
+                        {ptVoices.map((v) => {
+                          const active = v.voiceURI === voiceURI;
+                          return (
+                            <button
+                              key={v.voiceURI}
+                              role="option"
+                              aria-selected={active}
+                              onClick={() => handleVoicePick(v.voiceURI)}
+                              className={cn(
+                                'w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-left transition-colors',
+                                active ? 'bg-brand-soft' : 'hover:bg-white/5',
+                              )}
+                            >
+                              <span className="min-w-0">
+                                <span className="block text-xs font-semibold text-fg truncate">
+                                  {v.name}
+                                </span>
+                                <span className="block text-[10px] text-dim mt-0.5">
+                                  {voiceLabel(v)}
+                                </span>
+                              </span>
+                              {active && <Check className="w-3.5 h-3.5 text-brand shrink-0" />}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setAutoAdvance((v) => !v)}
+                  aria-pressed={autoAdvance}
+                  title="Ao terminar o capítulo, segue para o próximo sozinho"
+                  className={cn(
+                    'inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[10px] font-bold transition-colors',
+                    autoAdvance
+                      ? 'bg-brand-soft border-brand/40 text-brand'
+                      : 'bg-white/5 border-line text-muted hover:text-fg',
+                  )}
+                >
+                  AUTO
+                  {autoAdvance && <Check className="w-3 h-3" />}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -323,7 +579,10 @@ export function ReaderModal({
             <div className="h-full flex flex-col items-center justify-center text-center gap-5 px-6">
               <p className="text-muted text-sm">{error}</p>
               <button
-                onClick={() => setReloadKey((k) => k + 1)}
+                onClick={() => {
+                  stopTts();
+                  setReloadKey((k) => k + 1);
+                }}
                 className="px-5 py-2 rounded-xl border border-line text-sm text-fg hover:bg-white/5"
               >
                 Tentar novamente
@@ -339,7 +598,10 @@ export function ReaderModal({
                   <p
                     key={i}
                     data-verse={i + 1}
-                    className="mb-3 text-fg/90 transition-colors hover:bg-white/[0.03] rounded-lg px-1 py-0.5"
+                    className={cn(
+                      'mb-3 text-fg/90 rounded-lg px-1 py-0.5 transition-colors',
+                      activeVerse === i && 'bg-brand-soft ring-1 ring-brand/40 text-fg',
+                    )}
                   >
                     <sup className="text-brand font-semibold text-[0.6em] mr-1.5 select-none">
                       {i + 1}
@@ -355,7 +617,7 @@ export function ReaderModal({
         {/* Footer */}
         <div className="shrink-0 flex items-center justify-between px-4 md:px-6 py-4 bg-panel border-t border-line">
           <button
-            onClick={() => setCurrentChapter((c) => Math.max(1, c - 1))}
+            onClick={goPrevChapter}
             disabled={currentChapter === 1}
             className="inline-flex items-center gap-2 text-sm font-bold text-muted hover:text-fg transition-colors disabled:opacity-20 disabled:pointer-events-none"
           >
@@ -366,7 +628,7 @@ export function ReaderModal({
             {currentChapter} / {totalChapters}
           </span>
           <button
-            onClick={() => setCurrentChapter((c) => Math.min(totalChapters, c + 1))}
+            onClick={goNextChapter}
             disabled={currentChapter === totalChapters}
             className="inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand-strong transition-colors disabled:opacity-20 disabled:pointer-events-none"
           >
