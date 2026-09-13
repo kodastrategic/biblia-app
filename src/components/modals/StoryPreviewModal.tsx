@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { X, Quote, BookOpen, Camera, Type, Palette, ChevronDown } from 'lucide-react';
+import { X, Quote, BookOpen, Type, Palette, ChevronDown } from 'lucide-react';
 import type { BookMark } from '../../types';
 import { markReference } from '../../lib/marks';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
@@ -14,11 +14,15 @@ const MAX_FONT = 24;
 const MIN_FONT = 14;
 const LEAD = 1.45;
 
-type FontChoice = 'sans' | 'serif';
+type FontChoice = 'sans' | 'serif' | 'lora' | 'playfair' | 'script' | 'mono';
 
 const FONT_OPTIONS: Array<{ id: FontChoice; name: string }> = [
-  { id: 'sans', name: 'Sans (Inter)' },
-  { id: 'serif', name: 'Serifada (Crimson)' },
+  { id: 'sans', name: 'Inter (Sans)' },
+  { id: 'serif', name: 'Crimson (Serif)' },
+  { id: 'lora', name: 'Lora (Elegante)' },
+  { id: 'playfair', name: 'Playfair (Editorial)' },
+  { id: 'script', name: 'Dancing (Caligrafia)' },
+  { id: 'mono', name: 'Mono (Técnico)' },
 ];
 
 interface GradientPreset {
@@ -35,6 +39,15 @@ const GRADIENTS: GradientPreset[] = [
   { id: 'cereja', name: 'Cereja', className: 'from-rose-500 via-red-600 to-purple-800' },
   { id: 'noite', name: 'Noite', className: 'from-slate-800 via-slate-900 to-black' },
 ];
+
+const FONT_CLASS: Record<FontChoice, string> = {
+  sans: '',
+  serif: 'font-serif',
+  lora: 'font-lora',
+  playfair: 'font-playfair',
+  script: 'font-script font-semibold',
+  mono: 'font-mono',
+};
 
 export function StoryPreviewModal({ mark, onClose }: StoryPreviewModalProps) {
   const [font, setFont] = useLocalStorage<FontChoice>('storyFont', 'sans');
@@ -54,7 +67,7 @@ export function StoryPreviewModal({ mark, onClose }: StoryPreviewModalProps) {
       const cardW = card.clientWidth;
       const cardH = card.clientHeight;
       const areaW = Math.max(80, cardW - 64);
-      const budgetH = Math.max(120, cardH - 240);
+      const budgetH = Math.max(120, cardH - 160);
 
       let size = MAX_FONT;
       let fits = false;
@@ -112,7 +125,7 @@ export function StoryPreviewModal({ mark, onClose }: StoryPreviewModalProps) {
           >
             <Quote className="w-8 h-8 text-white/30 shrink-0" />
             <blockquote
-              className={cn('text-white leading-snug text-balance', font === 'serif' && 'font-serif')}
+              className={cn('text-white leading-snug text-balance', FONT_CLASS[font])}
               style={{ fontSize: `${fontSize}px`, lineHeight: LEAD }}
             >
               “{mark.text}”
@@ -120,14 +133,6 @@ export function StoryPreviewModal({ mark, onClose }: StoryPreviewModalProps) {
             <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-[13px] font-bold text-white/90 shrink-0">
               {markReference(mark)}
             </span>
-          </div>
-
-          <div className="pb-9 flex flex-col items-center gap-2">
-            <p className="inline-flex items-center gap-1.5 text-[11px] text-white/50">
-              <Camera className="w-3.5 h-3.5" />
-              Tire um print para compartilhar
-            </p>
-            <span className="w-1.5 h-1.5 rounded-full bg-white/30" />
           </div>
         </div>
       </div>
