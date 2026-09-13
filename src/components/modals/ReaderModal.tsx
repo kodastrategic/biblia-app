@@ -170,122 +170,141 @@ export function ReaderModal({
     <Modal open onClose={onClose} position="full">
       <div className="relative w-full h-full max-w-5xl mx-auto bg-ink-2 border-x border-line flex flex-col md:my-6 md:rounded-2xl md:overflow-hidden md:shadow-[0_0_80px_rgba(0,0,0,0.8)]">
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 px-4 md:px-6 py-4 bg-panel border-b border-line shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="p-2 rounded-lg bg-brand-soft border border-brand/30 text-brand shrink-0">
-              <BookOpen className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <h2 className="font-semibold text-fg leading-tight truncate">
-                {book} {currentChapter}
-              </h2>
-              <div className="relative">
-                <button
-                  onClick={() => setTranslationOpen((o) => !o)}
-                  className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-dim mt-0.5 hover:text-fg transition-colors"
-                  aria-haspopup="listbox"
-                  aria-expanded={translationOpen}
-                >
-                  <span className="font-bold text-brand">{translationId.toUpperCase()}</span>
-                  <span className="max-w-[130px] md:max-w-[220px] truncate">{translationName}</span>
-                  <ChevronDown
-                    className={cn('w-3 h-3 transition-transform', translationOpen && 'rotate-180')}
-                  />
-                </button>
-
-                {translationOpen && (
-                  <>
-                    <div className="fixed inset-0 z-10" onClick={() => setTranslationOpen(false)} />
-                    <div
-                      role="listbox"
-                      className="absolute left-0 top-full mt-2 z-20 w-64 max-h-72 overflow-y-auto scrollbar-thin rounded-2xl border border-line bg-panel-2 shadow-2xl shadow-black/50 py-1.5 animate-scale-in"
-                    >
-                      {TRANSLATIONS.map((t) => {
-                        const active = t.id === translationId;
-                        return (
-                          <button
-                            key={t.id}
-                            role="option"
-                            aria-selected={active}
-                            onClick={() => handleTranslationPick(t.id)}
-                            className={cn(
-                              'w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-left transition-colors',
-                              active ? 'bg-brand-soft' : 'hover:bg-white/5',
-                            )}
-                          >
-                            <span className="min-w-0">
-                              <span className="block text-xs font-semibold text-fg truncate">
-                                <span className={cn('text-[10px] font-bold mr-1.5', active ? 'text-brand' : 'text-dim')}>
-                                  {t.id.toUpperCase()}
-                                </span>
-                                {t.name}
-                              </span>
-                              <span className="block text-[10px] text-dim mt-0.5">
-                                {t.publisher ? `Editora ${t.publisher}` : 'Domínio público'}
-                              </span>
-                            </span>
-                            {active && <Check className="w-3.5 h-3.5 text-brand shrink-0" />}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
+        <div className="shrink-0 bg-panel border-b border-line">
+          {/* Linha 1: título + fechar */}
+          <div className="flex items-center justify-between gap-3 px-4 md:px-6 pt-4 pb-2.5">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-2 rounded-lg bg-brand-soft border border-brand/30 text-brand shrink-0">
+                <BookOpen className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="font-semibold text-fg leading-tight truncate text-lg">
+                  {book} {currentChapter}
+                </h2>
+                <p className="text-[10px] text-dim uppercase tracking-wider mt-0.5">
+                  Capítulo {currentChapter} de {totalChapters}
+                </p>
               </div>
             </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              onClick={() => setFontSize((s) => Math.max(12, s - 2))}
-              className="p-2 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
-              aria-label="Diminuir fonte"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setFontSize((s) => Math.min(32, s + 2))}
-              className="p-2 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
-              aria-label="Aumentar fonte"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onMarkAsRead(book, currentChapter)}
-              className={cn(
-                'ml-1 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all active:scale-95',
-                isRead
-                  ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                  : 'bg-white/5 text-muted border-line hover:text-fg',
-              )}
-            >
-              {isRead ? 'LIDO' : 'MARCAR COMO LIDO'}
-            </button>
-            <button
-              onClick={handleMark}
-              disabled={!selection}
-              title={
-                selection
-                  ? `Favoritar trecho · ${selectionReference(book, currentChapter, selection.verse, selection.verseEnd)}`
-                  : 'Selecione um texto para favoritar'
-              }
-              aria-label="Favoritar trecho selecionado"
-              className={cn(
-                'ml-1 p-2 rounded-xl border transition-all active:scale-95',
-                selection
-                  ? 'text-red-400 border-red-400/30 bg-red-500/10 shadow-[0_0_16px_rgba(248,113,113,0.35)]'
-                  : 'text-dim border-line hover:text-fg hover:bg-white/5 disabled:cursor-not-allowed',
-              )}
-            >
-              <Heart className="w-5 h-5" />
-            </button>
             <button
               onClick={onBack}
-              className="ml-1 p-2 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
+              className="shrink-0 p-2 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
               aria-label="Voltar para biblioteca"
             >
               <X className="w-6 h-6" />
             </button>
+          </div>
+
+          {/* Linha 2: barra de controles */}
+          <div className="flex items-center justify-between gap-2 px-4 md:px-6 pb-3.5">
+            <div className="relative min-w-0">
+              <button
+                onClick={() => setTranslationOpen((o) => !o)}
+                className="inline-flex items-center gap-2 max-w-full px-3 py-2 rounded-xl border border-line bg-white/5 hover:border-brand/40 text-left transition-colors"
+                aria-haspopup="listbox"
+                aria-expanded={translationOpen}
+              >
+                <span className="shrink-0 px-1.5 py-0.5 rounded-md bg-brand-soft border border-brand/30 text-brand text-[10px] font-bold">
+                  {translationId.toUpperCase()}
+                </span>
+                <span className="text-xs font-semibold text-fg truncate max-w-[26vw] md:max-w-[250px]">
+                  {translationName}
+                </span>
+                <ChevronDown
+                  className={cn('shrink-0 w-3.5 h-3.5 text-muted transition-transform', translationOpen && 'rotate-180')}
+                />
+              </button>
+
+              {translationOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setTranslationOpen(false)} />
+                  <div
+                    role="listbox"
+                    className="absolute left-0 top-full mt-2 z-20 w-64 max-h-72 overflow-y-auto scrollbar-thin rounded-2xl border border-line bg-panel-2 shadow-2xl shadow-black/50 py-1.5 animate-scale-in"
+                  >
+                    {TRANSLATIONS.map((t) => {
+                      const active = t.id === translationId;
+                      return (
+                        <button
+                          key={t.id}
+                          role="option"
+                          aria-selected={active}
+                          onClick={() => handleTranslationPick(t.id)}
+                          className={cn(
+                            'w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-left transition-colors',
+                            active ? 'bg-brand-soft' : 'hover:bg-white/5',
+                          )}
+                        >
+                          <span className="min-w-0">
+                            <span className="block text-xs font-semibold text-fg truncate">
+                              <span className={cn('text-[10px] font-bold mr-1.5', active ? 'text-brand' : 'text-dim')}>
+                                {t.id.toUpperCase()}
+                              </span>
+                              {t.name}
+                            </span>
+                            <span className="block text-[10px] text-dim mt-0.5">
+                              {t.publisher ? `Editora ${t.publisher}` : 'Domínio público'}
+                            </span>
+                          </span>
+                          {active && <Check className="w-3.5 h-3.5 text-brand shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-0.5 rounded-xl border border-line bg-white/5 p-0.5">
+                <button
+                  onClick={() => setFontSize((s) => Math.max(12, s - 2))}
+                  className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
+                  aria-label="Diminuir fonte"
+                >
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] font-mono text-dim tabular-nums px-0.5 select-none">
+                  {fontSize}
+                </span>
+                <button
+                  onClick={() => setFontSize((s) => Math.min(32, s + 2))}
+                  className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
+                  aria-label="Aumentar fonte"
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+              <button
+                onClick={() => onMarkAsRead(book, currentChapter)}
+                className={cn(
+                  'px-2.5 md:px-3.5 py-2 rounded-xl text-[11px] md:text-xs font-bold border transition-all active:scale-95',
+                  isRead
+                    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                    : 'bg-white/5 text-muted border-line hover:text-fg',
+                )}
+              >
+                {isRead ? 'LIDO' : 'MARCAR LIDO'}
+              </button>
+              <button
+                onClick={handleMark}
+                disabled={!selection}
+                title={
+                  selection
+                    ? `Favoritar trecho · ${selectionReference(book, currentChapter, selection.verse, selection.verseEnd)}`
+                    : 'Selecione um texto para favoritar'
+                }
+                aria-label="Favoritar trecho selecionado"
+                className={cn(
+                  'p-2.5 rounded-xl border transition-all active:scale-95',
+                  selection
+                    ? 'text-red-400 border-red-400/30 bg-red-500/10 shadow-[0_0_16px_rgba(248,113,113,0.35)]'
+                    : 'text-dim border-line hover:text-fg hover:bg-white/5 disabled:cursor-not-allowed',
+                )}
+              >
+                <Heart className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
 
