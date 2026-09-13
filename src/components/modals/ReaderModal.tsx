@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 import { fetchChapter } from '../../lib/bible';
 import { cn } from '../../lib/cn';
 import { TRANSLATIONS, getTranslation } from '../../data/translations';
-import { isPortugueseVoice, rankVoices, voiceGender, voiceLabel, GENDER_ORDER, genderMark } from '../../lib/tts';
+import { isBrazilianVoice, isPortugueseVoice, rankVoices, voiceGender, voiceLabel, GENDER_ORDER, genderMark } from '../../lib/tts';
 import { useTTS } from '../../hooks/useTTS';
 import { Modal } from '../ui/Modal';
 
@@ -100,7 +100,10 @@ export function ReaderModal({
   const pendingAdvanceRef = useRef<number | null>(null);
 
   const ptVoices = useMemo(() => {
-    return rankVoices(ttsVoices.filter(isPortugueseVoice)).sort(
+    const pt = ttsVoices.filter(isPortugueseVoice);
+    const br = pt.filter(isBrazilianVoice);
+    const source = br.length ? br : pt;
+    return rankVoices(source).sort(
       (a, b) => GENDER_ORDER[voiceGender(a)] - GENDER_ORDER[voiceGender(b)],
     );
   }, [ttsVoices]);

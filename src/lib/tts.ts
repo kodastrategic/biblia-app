@@ -15,6 +15,10 @@ export function isPortugueseVoice(voice: SpeechSynthesisVoice): boolean {
   return /^pt([-_][a-z]{2,4})?$/i.test(voice.lang.trim());
 }
 
+export function isBrazilianVoice(voice: SpeechSynthesisVoice): boolean {
+  return /^pt[-_]br$/i.test(voice.lang.trim());
+}
+
 export type VoiceGender = 'male' | 'female' | 'unknown';
 
 const MALE_TOKENS = [
@@ -87,7 +91,8 @@ export function pickPreferredVoice(
     const exact = voices.find((v) => v.voiceURI === preferredUri);
     if (exact) return exact;
   }
+  const brVoices = voices.filter(isBrazilianVoice);
   const ptVoices = voices.filter(isPortugueseVoice);
-  const ranked = rankVoices(ptVoices);
+  const ranked = rankVoices(brVoices.length ? brVoices : ptVoices);
   return ranked[0] ?? voices[0];
 }
