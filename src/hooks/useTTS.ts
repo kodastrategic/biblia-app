@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getVoiceList, isTtsSupported, pickPreferredVoice } from '../lib/tts';
+import { getPiperStatus, onPiperStatusChange, PIPER_VOICE_SENTINEL, piperSynthesize } from '../lib/piperTTS';
 import { useLocalStorage } from './useLocalStorage';
 
 export type TTSState = 'idle' | 'playing' | 'paused';
@@ -17,6 +18,9 @@ export function useTTS() {
   const [voiceURI, setVoiceURI] = useLocalStorage<string | null>('bibleTtsVoice', null);
   const [rate, setRate] = useLocalStorage<number>('bibleTtsRate', 0.95);
   const [autoAdvance, setAutoAdvance] = useLocalStorage<boolean>('bibleTtsAutoAdvance', true);
+  const [piperStatus, setPiperStatus] = useState(getPiperStatus());
+
+  useEffect(() => onPiperStatusChange(setPiperStatus), []);
 
   const synth = typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null;
   const synthRef = useRef<SpeechSynthesis | null>(synth);
@@ -53,11 +57,55 @@ export function useTTS() {
     };
   }, [supported]);
 
+  const advanceTo = useCallback(
+    (next: number, token: number) => {
+      clearGap();
+      gapRef.current = window.setTimeout(() => speakAt(next, token), 300);
+    },
+    [clearGap],
+  );
+
+  const speakPiper = useCallback(
+    async (index: number, token: number) => {
+      const session = sessionRef.current;
+      if (!session) return;
+      const text = String(session.verses[index] ?? '').trim();
+      if (!text) {
+        advanceTo(index + 1, token);
+        return;
+      }
+      const finish = (next: number, revokeUrl?: string) => {
+        if (revokeUrl) URL.revokeObjectURL(revokeUrl);
+        if (tokenRef.current === token) advanceTo(next, token);
+      };
+      try {
+        const { url, durationMs } = await piperSynthesize(text);
+        void durationMs;
+        if (tokenRef.current === token) {
+          const audio = new Audio(url);
+          audio.playbackRate = rateRef.current;
+          audio.onended = () => finish(index + 1, url);
+          audio.onerror = () => finish(index + 1, url);
+          try {
+            await audio.play();
+          } catch (err) {
+            finish(index + 1, url);
+          }
+        } else {
+          URL.revokeObjectURL(url);
+        }
+      } catch {
+        finish(index + 1);
+      }
+    },
+    [advanceTo],
+  );
+
   const speakAt = useCallback(
     (index: number, token: number) => {
       const synth = synthRef.current;
       const session = sessionRef.current;
-      if (tokenRef.current !== token || !synth || !session) return;
+      if (tokenRef.current !== token || !session) return;
       clearGap();
 
       if (index >= session.verses.length) {
@@ -75,10 +123,15 @@ export function useTTS() {
         return;
       }
 
-      synth.cancel();
+      synth?.cancel();
       verseIndexRef.current = index;
       setActiveVerse(index);
       setState('playing');
+
+      if (voiceURIRef.current === PIPER_VOICE_SENTINEL) {
+        void speakPiper(index, token);
+        return;
+      }
 
       const utterance = new SpeechSynthesisUtterance(text);
       const voice = pickPreferredVoice(voicesRef.current, voiceURIRef.current);
@@ -90,24 +143,20 @@ export function useTTS() {
       }
       utterance.rate = rateRef.current;
 
-      const advance = (next: number) => {
-        clearGap();
-        gapRef.current = window.setTimeout(() => speakAt(next, token), 300);
-      };
-      utterance.onend = () => advance(index + 1);
+      utterance.onend = () => advanceTo(index + 1, token);
       utterance.onerror = (event) => {
         if (event.error === 'canceled' || event.error === 'interrupted') return;
-        advance(index + 1);
+        advanceTo(index + 1, token);
       };
 
-      synth.speak(utterance);
+      synth?.speak(utterance);
     },
-    [clearGap],
+    [advanceTo, speakPiper],
   );
 
   const play = useCallback(
     (verses: string[], fromIndex = 0, onEnd?: () => void) => {
-      if (!synthRef.current) return;
+      if (!synthRef.current && voiceURIRef.current !== PIPER_VOICE_SENTINEL) return;
       sessionRef.current = { verses, onEnd };
       verseIndexRef.current = fromIndex;
       speakAt(fromIndex, ++tokenRef.current);
@@ -124,7 +173,7 @@ export function useTTS() {
 
   const resume = useCallback(() => {
     const session = sessionRef.current;
-    if (!session || !synthRef.current) return;
+    if (!session) return;
     const index = verseIndexRef.current >= 0 ? verseIndexRef.current : 0;
     speakAt(index, ++tokenRef.current);
   }, [speakAt]);
@@ -155,6 +204,7 @@ export function useTTS() {
     voiceURI,
     rate,
     autoAdvance,
+    piperStatus,
     setVoiceURI,
     setRate,
     setAutoAdvance,

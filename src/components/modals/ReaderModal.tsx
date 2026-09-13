@@ -21,6 +21,7 @@ import { cn } from '../../lib/cn';
 import { TRANSLATIONS, getTranslation } from '../../data/translations';
 import { isBrazilianVoice, isPortugueseVoice, rankVoices, voiceGender, voiceLabel, GENDER_ORDER, genderMark } from '../../lib/tts';
 import { useTTS } from '../../hooks/useTTS';
+import { PIPER_VOICE_SENTINEL, PIPER_VOICE_NAME, warmUpPiper } from '../../lib/piperTTS';
 import { Modal } from '../ui/Modal';
 
 interface ReaderModalProps {
@@ -88,6 +89,7 @@ export function ReaderModal({
     voiceURI,
     rate,
     autoAdvance,
+    piperStatus,
     play,
     pause: pauseTts,
     resume: resumeTts,
@@ -96,6 +98,7 @@ export function ReaderModal({
     setRate,
     setAutoAdvance,
   } = tts;
+  const isPiperSelected = voiceURI === PIPER_VOICE_SENTINEL;
   const [voiceOpen, setVoiceOpen] = useState(false);
   const pendingAdvanceRef = useRef<number | null>(null);
 
@@ -174,15 +177,20 @@ export function ReaderModal({
     const next = Math.min(1.6, Math.max(0.6, Math.round((rate + delta) * 10) / 10));
     setRate(next);
     if (ttsState === 'playing' && activeVerse >= 0) {
-      play(verses, activeVerse, handleChapterEnd);
+      window.setTimeout(() => {
+        play(verses, activeVerse, handleChapterEnd);
+      }, 0);
     }
   };
 
   const handleVoicePick = (voiceUri: string | null) => {
     setVoiceURI(voiceUri);
     setVoiceOpen(false);
+    if (voiceUri === PIPER_VOICE_SENTINEL) warmUpPiper();
     if (ttsState === 'playing' && activeVerse >= 0) {
-      play(verses, activeVerse, handleChapterEnd);
+      window.setTimeout(() => {
+        play(verses, activeVerse, handleChapterEnd);
+      }, 0);
     }
   };
 
@@ -420,88 +428,103 @@ export function ReaderModal({
 
           {/* Linha 3: áudio (TTS) */}
           {supported && (
-            <div className="flex items-center gap-x-4 gap-y-2 flex-wrap px-4 md:px-6 pb-3.5 pt-3 border-t border-line">
+            <div className="flex items-center gap-2 px-4 md:px-6 pb-3.5 pt-3 border-t border-line">
               <button
                 onClick={togglePlayback}
                 disabled={!verses.length}
                 aria-label={ttsState === 'playing' ? 'Pausar leitura' : 'Ouvir capítulo'}
                 title={ttsState === 'playing' ? 'Pausar' : 'Ouvir este capítulo'}
                 className={cn(
-                  'flex items-center justify-center h-11 rounded-full border transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none',
+                  'flex items-center justify-center shrink-0 h-10 rounded-full border transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none',
                   ttsState === 'playing'
-                    ? 'bg-red-500/15 text-red-400 border-red-400/30'
-                    : 'bg-brand text-ink border-brand/50 shadow-glow px-5',
+                    ? 'w-10 bg-red-500/15 text-red-400 border-red-400/30'
+                    : 'bg-brand text-ink border-brand/50 shadow-glow px-3 md:px-4',
                 )}
               >
                 {ttsState === 'playing' ? (
                   <Pause className="w-5 h-5" />
                 ) : (
-                  <Play className="w-5 h-5 fill-current" />
-                )}
-                {ttsState !== 'playing' && (
-                  <span className="text-xs font-bold tracking-wide">
-                    {ttsState === 'paused' ? 'CONTINUAR' : 'OUVIR'}
-                  </span>
+                  <>
+                    <Play className="w-4 h-4 fill-current" />
+                    <span className="text-[11px] font-bold tracking-wide hidden md:inline">
+                      {ttsState === 'paused' ? 'CONTINUAR' : 'OUVIR'}
+                    </span>
+                  </>
                 )}
               </button>
 
               {ttsState !== 'idle' && (
-                <>
-                  <button
-                    onClick={handleStopAudio}
-                    aria-label="Parar áudio"
-                    title="Parar áudio"
-                    className="w-10 h-10 rounded-full border border-line bg-white/5 text-muted hover:text-fg hover:bg-white/10 transition-colors flex items-center justify-center"
-                  >
-                    <Square className="w-3.5 h-3.5 fill-current" />
-                  </button>
-                  <span className="text-[11px] text-muted tabular-nums">
-                    {ttsState === 'paused' ? 'Pausado' : `Lendo versículo ${activeVerse + 1} de ${verses.length}`}
-                  </span>
-                </>
+                <button
+                  onClick={handleStopAudio}
+                  aria-label="Parar áudio"
+                  title="Parar áudio"
+                  className="w-9 h-9 shrink-0 rounded-full border border-line bg-white/5 text-muted hover:text-fg hover:bg-white/10 transition-colors flex items-center justify-center"
+                >
+                  <Square className="w-3 h-3 fill-current" />
+                </button>
               )}
 
-              <div className="flex items-center gap-3 ml-auto">
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <span className="text-[10px] uppercase tracking-wider text-dim hidden md:inline">
-                    Veloc.
+              <div className="flex-1 min-w-0 text-center">
+                {isPiperSelected && piperStatus.phase === 'loading' ? (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] text-dim max-w-full truncate">
+                    <Loader2 className="w-3 h-3 animate-spin text-brand shrink-0" />
+                    <span className="truncate">{piperStatus.message ?? 'Baixando voz Piper...'}</span>
                   </span>
-                  <div className="flex items-center gap-0.5 rounded-xl border border-line bg-white/5 p-0.5">
-                    <button
-                      onClick={() => changeRate(-0.1)}
-                      aria-label="Diminuir velocidade"
-                      className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <span className="text-[10px] font-mono text-dim tabular-nums px-0.5 select-none w-9 text-center">
-                      {rate.toFixed(1)}×
-                    </span>
-                    <button
-                      onClick={() => changeRate(0.1)}
-                      aria-label="Aumentar velocidade"
-                      className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
+                ) : isPiperSelected && piperStatus.phase === 'error' ? (
+                  <span className="text-[11px] text-red-400 truncate block">{piperStatus.message}</span>
+                ) : (
+                  <span className="text-[11px] text-muted tabular-nums truncate block">
+                    {ttsState === 'idle'
+                      ? (isPiperSelected ? '\u00a0' : '')
+                      : ttsState === 'paused'
+                        ? 'Pausado'
+                        : `Lendo versículo ${activeVerse + 1}/${verses.length}`}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                <div
+                  className="flex items-center gap-0.5 rounded-xl border border-line bg-white/5 p-0.5"
+                  title={`Velocidade: ${rate.toFixed(1)}×`}
+                >
+                  <button
+                    onClick={() => changeRate(-0.1)}
+                    aria-label="Diminuir velocidade"
+                    className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-[10px] font-mono text-dim tabular-nums px-0.5 select-none w-8 text-center">
+                    {rate.toFixed(1)}×
+                  </span>
+                  <button
+                    onClick={() => changeRate(0.1)}
+                    aria-label="Aumentar velocidade"
+                    className="p-1.5 rounded-lg text-muted hover:text-fg hover:bg-white/5 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
                 </div>
 
                 <div className="relative">
                   <button
                     onClick={() => setVoiceOpen((o) => !o)}
-                    className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-line bg-white/5 hover:border-brand/40 text-left transition-colors max-w-[160px] md:max-w-[220px]"
+                    aria-label="Escolher voz"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl border border-line bg-white/5 hover:border-brand/40 text-left transition-colors max-w-[110px] md:max-w-[200px]"
                     aria-haspopup="listbox"
                     aria-expanded={voiceOpen}
                   >
                     <Volume2 className="w-4 h-4 text-brand shrink-0" />
                     <span className="text-[11px] font-semibold text-fg truncate">
-                      {(() => {
-                        const selected = ptVoices.find((v) => v.voiceURI === voiceURI);
-                        return selected
-                          ? `${genderMark(voiceGender(selected)) ? `${genderMark(voiceGender(selected))} ` : ''}${selected.name}`
-                          : 'Voz automática';
-                      })()}
+                      {isPiperSelected
+                        ? `${genderMark('male')} ${PIPER_VOICE_NAME}`
+                        : (() => {
+                            const selected = ptVoices.find((v) => v.voiceURI === voiceURI);
+                            return selected
+                              ? `${genderMark(voiceGender(selected)) ? `${genderMark(voiceGender(selected))} ` : ''}${selected.name}`
+                              : 'Voz automática';
+                          })()}
                     </span>
                     <ChevronDown
                       className={cn('w-3.5 h-3.5 text-muted shrink-0 transition-transform', voiceOpen && 'rotate-180')}
@@ -527,6 +550,28 @@ export function ReaderModal({
                           <span className="text-xs font-semibold text-fg">Voz automática</span>
                           {voiceURI === null && <Check className="w-3.5 h-3.5 text-brand shrink-0" />}
                         </button>
+                        <button
+                          role="option"
+                          aria-selected={isPiperSelected}
+                          onClick={() => handleVoicePick(PIPER_VOICE_SENTINEL)}
+                          className={cn(
+                            'w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-left transition-colors',
+                            isPiperSelected ? 'bg-brand-soft' : 'hover:bg-white/5',
+                          )}
+                        >
+                          <span className="min-w-0">
+                            <span className="block text-xs font-semibold text-fg truncate">
+                              <span className="text-dim">{genderMark('male')}</span> {PIPER_VOICE_NAME}
+                            </span>
+                            <span className="block text-[10px] text-dim mt-0.5">
+                              Offline · masculina · baixa ~80MB na 1ª vez
+                            </span>
+                          </span>
+                          {isPiperSelected && <Check className="w-3.5 h-3.5 text-brand shrink-0" />}
+                        </button>
+                        <div className="my-1.5 px-3.5">
+                          <span className="block text-[9px] uppercase tracking-widest text-dim/70">Vozes do aparelho</span>
+                        </div>
                         {ptVoices.map((v) => {
                           const active = v.voiceURI === voiceURI;
                           return (
@@ -563,7 +608,7 @@ export function ReaderModal({
                   aria-pressed={autoAdvance}
                   title="Ao terminar o capítulo, segue para o próximo sozinho"
                   className={cn(
-                    'inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-[10px] font-bold transition-colors',
+                    'inline-flex items-center gap-1 px-2.5 py-2 rounded-xl border text-[10px] font-bold transition-colors',
                     autoAdvance
                       ? 'bg-brand-soft border-brand/40 text-brand'
                       : 'bg-white/5 border-line text-muted hover:text-fg',
