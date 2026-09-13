@@ -74,7 +74,7 @@ export function FeedCard({ marks, onOpenMarks, onOpenLibrary }: FeedCardProps) {
 
           <blockquote
             key={swapKey}
-            className="animate-feed-swap font-serif italic text-xl md:text-2xl text-fg/95 leading-relaxed line-clamp-4 min-h-[120px]"
+            className="animate-feed-swap font-sans text-xl md:text-2xl text-fg/95 leading-relaxed line-clamp-4 min-h-[120px]"
           >
             “{mark.text}”
           </blockquote>

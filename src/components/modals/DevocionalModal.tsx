@@ -84,7 +84,7 @@ export function DevocionalModal({ open, onClose, initialDay, onCompleteDay }: De
                 <p className="text-xs text-brand font-bold uppercase tracking-wider mb-2">
                   {current.referencia_biblica}
                 </p>
-                <p className="font-serif italic text-lg md:text-xl text-fg/90 leading-relaxed">
+                <p className="font-sans text-lg md:text-xl text-fg/90 leading-relaxed">
                   “{current.texto_base}”
                 </p>
               </blockquote>

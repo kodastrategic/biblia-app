@@ -26,18 +26,24 @@ export function createMark(
   book: string,
   chapter: number,
   verse: number,
+  verseEnd?: number,
 ): BookMark {
+  const end = verseEnd && verseEnd > verse ? verseEnd : undefined;
   return {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     text,
     book,
     chapter,
     verse,
+    ...(end ? { verseEnd: end } : {}),
     createdAt: Date.now(),
   };
 }
 
 export function markReference(mark: BookMark): string {
+  if (mark.verseEnd && mark.verseEnd > mark.verse) {
+    return `${mark.book} ${mark.chapter}:${mark.verse}-${mark.verseEnd}`;
+  }
   return `${mark.book} ${mark.chapter}:${mark.verse}`;
 }
 

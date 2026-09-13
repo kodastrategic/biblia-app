@@ -61,8 +61,8 @@ export default function App() {
     }
   };
 
-  const handleAddMark = (text: string, book: string, chapter: number, verse: number) => {
-    addMark(createMark(text, book, chapter, verse));
+  const handleAddMark = (text: string, book: string, chapter: number, verse: number, verseEnd?: number) => {
+    addMark(createMark(text, book, chapter, verse, verseEnd));
   };
 
   const handleOpenMark = (mark: BookMark) => {
@@ -138,6 +138,7 @@ export default function App() {
         translationName={translation.name}
         onClose={() => setReader(null)}
         onBack={handleReaderBack}
+        onTranslationChange={setTranslationId}
         isChapterRead={isChapterRead}
         onMarkAsRead={(b, c) => handleToggleChapter(b, c)}
         onAddMark={handleAddMark}

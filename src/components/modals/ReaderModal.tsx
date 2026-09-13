@@ -3,9 +3,10 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  Check,
   BookOpen,
   Loader2,
-  CheckCircle2,
   Minus,
   Plus,
   Heart,
@@ -13,6 +14,7 @@ import {
 import { toast } from 'sonner';
 import { fetchChapter } from '../../lib/bible';
 import { cn } from '../../lib/cn';
+import { TRANSLATIONS, getTranslation } from '../../data/translations';
 import { Modal } from '../ui/Modal';
 
 interface ReaderModalProps {
@@ -23,14 +25,27 @@ interface ReaderModalProps {
   translationName: string;
   onClose: () => void;
   onBack: () => void;
+  onTranslationChange: (id: string) => void;
   isChapterRead: (book: string, chapter: number) => boolean;
   onMarkAsRead: (book: string, chapter: number) => void;
-  onAddMark: (text: string, book: string, chapter: number, verse: number) => void;
+  onAddMark: (text: string, book: string, chapter: number, verse: number, verseEnd?: number) => void;
 }
 
 interface SelectionInfo {
   text: string;
   verse: number;
+  verseEnd?: number;
+}
+
+function verseFromNode(node: Node | null): number {
+  if (!node) return 0;
+  const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : (node.parentElement as Element | null);
+  const verseEl = el?.closest?.('[data-verse]') as HTMLElement | null;
+  return verseEl ? Number(verseEl.dataset.verse) : 0;
+}
+
+function selectionReference(book: string, chapter: number, verse: number, verseEnd?: number): string {
+  return verseEnd && verseEnd > verse ? `${book} ${chapter}:${verse}-${verseEnd}` : `${book} ${chapter}:${verse}`;
 }
 
 export function ReaderModal({
@@ -41,6 +56,7 @@ export function ReaderModal({
   translationName,
   onClose,
   onBack,
+  onTranslationChange,
   isChapterRead,
   onMarkAsRead,
   onAddMark,
@@ -52,6 +68,7 @@ export function ReaderModal({
   const [fontSize, setFontSize] = useState(18);
   const [selection, setSelection] = useState<SelectionInfo | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+  const [translationOpen, setTranslationOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const loadId = useRef(0);
   const selectionRef = useRef<SelectionInfo | null>(null);
@@ -102,17 +119,19 @@ export function ReaderModal({
         return;
       }
       const range = sel.getRangeAt(0);
-      const node: Node = range.commonAncestorContainer;
-      const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
-      const verseEl = el?.closest('[data-verse]') as HTMLElement | null;
-      const verse = verseEl ? Number(verseEl.dataset.verse) : 0;
-      if (!verse) {
+      const verseStart = verseFromNode(range.startContainer);
+      const verseEnd = verseFromNode(range.endContainer);
+      if (!verseStart || !verseEnd) {
         selectionRef.current = null;
         setSelection(null);
         return;
       }
-      selectionRef.current = { text, verse };
-      setSelection({ text, verse });
+      const start = Math.min(verseStart, verseEnd);
+      const end = Math.max(verseStart, verseEnd);
+      const info: SelectionInfo =
+        end > start ? { text, verse: start, verseEnd: end } : { text, verse: start };
+      selectionRef.current = info;
+      setSelection(info);
     };
     document.addEventListener('selectionchange', handleSelectionChange);
     return () => document.removeEventListener('selectionchange', handleSelectionChange);
@@ -127,11 +146,22 @@ export function ReaderModal({
   const handleMark = () => {
     const current = selectionRef.current;
     if (!current) return;
-    onAddMark(current.text, book, currentChapter, current.verse);
+    onAddMark(current.text, book, currentChapter, current.verse, current.verseEnd);
     toast.success('Texto favoritado!', {
-      description: `Salvo em marcações · ${book} ${currentChapter}:${current.verse}`,
+      description: `Salvo em marcações · ${selectionReference(book, currentChapter, current.verse, current.verseEnd)}`,
     });
     clearSelection();
+  };
+
+  const handleTranslationPick = (id: string) => {
+    if (id !== translationId) {
+      onTranslationChange(id);
+      const t = getTranslation(id);
+      toast.success('Tradução alterada', {
+        description: `${t.name} (${t.id.toUpperCase()}) · capítulo recarregado.`,
+      });
+    }
+    setTranslationOpen(false);
   };
 
   if (!book) return null;
@@ -149,9 +179,59 @@ export function ReaderModal({
               <h2 className="font-semibold text-fg leading-tight truncate">
                 {book} {currentChapter}
               </h2>
-              <p className="text-[10px] text-dim uppercase tracking-wider mt-0.5">
-                {translationId.toUpperCase()} · {translationName}
-              </p>
+              <div className="relative">
+                <button
+                  onClick={() => setTranslationOpen((o) => !o)}
+                  className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-dim mt-0.5 hover:text-fg transition-colors"
+                  aria-haspopup="listbox"
+                  aria-expanded={translationOpen}
+                >
+                  <span className="font-bold text-brand">{translationId.toUpperCase()}</span>
+                  <span className="max-w-[130px] md:max-w-[220px] truncate">{translationName}</span>
+                  <ChevronDown
+                    className={cn('w-3 h-3 transition-transform', translationOpen && 'rotate-180')}
+                  />
+                </button>
+
+                {translationOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setTranslationOpen(false)} />
+                    <div
+                      role="listbox"
+                      className="absolute left-0 top-full mt-2 z-20 w-64 max-h-72 overflow-y-auto scrollbar-thin rounded-2xl border border-line bg-panel-2 shadow-2xl shadow-black/50 py-1.5 animate-scale-in"
+                    >
+                      {TRANSLATIONS.map((t) => {
+                        const active = t.id === translationId;
+                        return (
+                          <button
+                            key={t.id}
+                            role="option"
+                            aria-selected={active}
+                            onClick={() => handleTranslationPick(t.id)}
+                            className={cn(
+                              'w-full flex items-center justify-between gap-2 px-3.5 py-2.5 text-left transition-colors',
+                              active ? 'bg-brand-soft' : 'hover:bg-white/5',
+                            )}
+                          >
+                            <span className="min-w-0">
+                              <span className="block text-xs font-semibold text-fg truncate">
+                                <span className={cn('text-[10px] font-bold mr-1.5', active ? 'text-brand' : 'text-dim')}>
+                                  {t.id.toUpperCase()}
+                                </span>
+                                {t.name}
+                              </span>
+                              <span className="block text-[10px] text-dim mt-0.5">
+                                {t.publisher ? `Editora ${t.publisher}` : 'Domínio público'}
+                              </span>
+                            </span>
+                            {active && <Check className="w-3.5 h-3.5 text-brand shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
@@ -186,7 +266,7 @@ export function ReaderModal({
               disabled={!selection}
               title={
                 selection
-                  ? `Favoritar trecho · ${book} ${currentChapter}:${selection.verse}`
+                  ? `Favoritar trecho · ${selectionReference(book, currentChapter, selection.verse, selection.verseEnd)}`
                   : 'Selecione um texto para favoritar'
               }
               aria-label="Favoritar trecho selecionado"
@@ -232,17 +312,17 @@ export function ReaderModal({
             </div>
           ) : (
             <div className="max-w-3xl mx-auto">
-              <h3 className="text-center font-serif italic text-2xl md:text-3xl text-fg mb-10">
+              <h3 className="text-center font-sans font-semibold text-xl md:text-2xl text-fg mb-8">
                 {book} {currentChapter}
               </h3>
-              <div className="font-serif leading-[1.95]" style={{ fontSize: `${fontSize}px` }}>
+              <div className="font-sans leading-[1.65]" style={{ fontSize: `${fontSize}px` }}>
                 {verses.map((verseText, i) => (
                   <p
                     key={i}
                     data-verse={i + 1}
-                    className="mb-5 text-fg/90 transition-colors hover:bg-white/[0.03] rounded-lg px-1 py-0.5"
+                    className="mb-3 text-fg/90 transition-colors hover:bg-white/[0.03] rounded-lg px-1 py-0.5"
                   >
-                    <sup className="text-brand font-sans font-semibold text-[0.6em] mr-2 select-none">
+                    <sup className="text-brand font-semibold text-[0.6em] mr-1.5 select-none">
                       {i + 1}
                     </sup>
                     {verseText}

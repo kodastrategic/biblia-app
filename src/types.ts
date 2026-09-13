@@ -23,6 +23,7 @@ export interface BookMark {
   book: string;
   chapter: number;
   verse: number;
+  verseEnd?: number;
   createdAt: number;
 }
 
