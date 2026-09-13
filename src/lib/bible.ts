@@ -4,7 +4,7 @@ export interface BibleBook {
   chapters: string[][];
 }
 
-let cache: BibleBook[] | null = null;
+const caches: Record<string, BibleBook[] | null> = {};
 
 function normalize(str: string): string {
   return str
@@ -32,22 +32,32 @@ const NAME_TO_ABBREV: Record<string, string> = {
   '3joao': '3jo', judas: 'jd', apocalipse: 'ap',
 };
 
-export async function loadBible(): Promise<BibleBook[]> {
-  if (cache) return cache;
-  const res = await fetch('/nvi.json', { cache: 'force-cache' });
+export function translationUrl(id: string): string {
+  const filtered = id.replace(/[^a-z0-9]/gi, '').toLowerCase();
+  return `/${filtered}.json`;
+}
+
+export async function loadBible(translationId: string): Promise<BibleBook[]> {
+  if (caches[translationId]) return caches[translationId]!;
+  const url = translationUrl(translationId);
+  const res = await fetch(url, { cache: 'force-cache' });
   if (!res.ok) {
-    throw new Error(`Não foi possível carregar /nvi.json (status ${res.status}).`);
+    throw new Error(`Não foi possível carregar ${url} (status ${res.status}).`);
   }
   const data = (await res.json()) as BibleBook[];
   if (!Array.isArray(data) || data.length === 0) {
-    throw new Error('O arquivo /nvi.json não está no formato esperado.');
+    throw new Error(`O arquivo ${url} não está no formato esperado.`);
   }
-  cache = data;
+  caches[translationId] = data;
   return data;
 }
 
-export async function fetchChapter(bookName: string, chapter: number): Promise<string[]> {
-  const bible = await loadBible();
+export async function fetchChapter(
+  bookName: string,
+  chapter: number,
+  translationId: string,
+): Promise<string[]> {
+  const bible = await loadBible(translationId);
   const target = normalize(bookName);
   const abbrev = NAME_TO_ABBREV[target];
 

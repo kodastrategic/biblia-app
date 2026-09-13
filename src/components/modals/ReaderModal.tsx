@@ -19,6 +19,8 @@ interface ReaderModalProps {
   book: string;
   chapter: number;
   totalChapters: number;
+  translationId: string;
+  translationName: string;
   onClose: () => void;
   onBack: () => void;
   isChapterRead: (book: string, chapter: number) => boolean;
@@ -35,6 +37,8 @@ export function ReaderModal({
   book,
   chapter,
   totalChapters,
+  translationId,
+  translationName,
   onClose,
   onBack,
   isChapterRead,
@@ -66,7 +70,7 @@ export function ReaderModal({
       selectionRef.current = null;
       setSelection(null);
       try {
-        const data = await fetchChapter(book, currentChapter);
+        const data = await fetchChapter(book, currentChapter, translationId);
         if (loadId.current !== id) return;
         setVerses(data);
       } catch (err) {
@@ -78,7 +82,7 @@ export function ReaderModal({
     };
     void run();
     scrollRef.current?.scrollTo({ top: 0 });
-  }, [book, currentChapter, reloadKey]);
+  }, [book, currentChapter, reloadKey, translationId]);
 
   const isRead = isChapterRead(book, currentChapter);
 
@@ -146,7 +150,7 @@ export function ReaderModal({
                 {book} {currentChapter}
               </h2>
               <p className="text-[10px] text-dim uppercase tracking-wider mt-0.5">
-                NVI · Nova Versão Internacional
+                {translationId.toUpperCase()} · {translationName}
               </p>
             </div>
           </div>

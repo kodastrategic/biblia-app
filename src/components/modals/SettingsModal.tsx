@@ -1,28 +1,49 @@
 import { useEffect, useState } from 'react';
-import { User, Save } from 'lucide-react';
+import { User, Save, BookOpenText, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { TOTAL_CHAPTERS } from '../../data/books';
+import { TRANSLATIONS, getTranslation } from '../../data/translations';
 import { Modal, ModalHeader } from '../ui/Modal';
 import { Button } from '../ui/Button';
+import { cn } from '../../lib/cn';
 
 interface SettingsModalProps {
   open: boolean;
   onClose: () => void;
   userName: string;
   onUserNameChange: (name: string) => void;
+  translationId: string;
+  onTranslationChange: (id: string) => void;
 }
 
-export function SettingsModal({ open, onClose, userName, onUserNameChange }: SettingsModalProps) {
+export function SettingsModal({
+  open,
+  onClose,
+  userName,
+  onUserNameChange,
+  translationId,
+  onTranslationChange,
+}: SettingsModalProps) {
   const [tempName, setTempName] = useState(userName);
 
   useEffect(() => {
     if (open) setTempName(userName);
   }, [open, userName]);
 
+  const translation = getTranslation(translationId);
+
   const handleSave = () => {
     onUserNameChange(tempName.trim());
     toast.success('Configurações salvas!', {
       description: 'Suas preferências foram atualizadas.',
+      duration: 3000,
+    });
+  };
+
+  const handleTranslationPick = (id: string) => {
+    onTranslationChange(id);
+    toast.success('Tradução atualizada', {
+      description: `${getTranslation(id).name} selecionada.`,
       duration: 3000,
     });
   };
@@ -50,6 +71,51 @@ export function SettingsModal({ open, onClose, userName, onUserNameChange }: Set
             </p>
           </div>
 
+          <div className="space-y-3">
+            <span className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted">
+              <BookOpenText className="w-3.5 h-3.5 text-brand" />
+              Tradução da Bíblia
+            </span>
+            <div className="space-y-2">
+              {TRANSLATIONS.map((t) => {
+                const active = t.id === translationId;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => handleTranslationPick(t.id)}
+                    className={cn(
+                      'w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border transition-all active:scale-[0.99]',
+                      active
+                        ? 'border-brand/50 bg-brand-soft'
+                        : 'border-line bg-white/5 hover:border-brand/30 hover:bg-white/[0.06]',
+                    )}
+                  >
+                    <span className="min-w-0 text-left">
+                      <span className="flex items-baseline gap-2">
+                        <span
+                          className={cn(
+                            'text-[10px] font-bold uppercase tracking-wider',
+                            active ? 'text-brand' : 'text-dim',
+                          )}
+                        >
+                          {t.id.toUpperCase()}
+                        </span>
+                        <span className="text-sm font-semibold text-fg truncate">{t.name}</span>
+                      </span>
+                      <span className="block text-[11px] text-dim mt-0.5">
+                        {t.publisher ? `${t.publisher}${t.year ? ` · ${t.year}` : ''}` : 'Tradução em português'}
+                      </span>
+                    </span>
+                    {active && <Check className="w-4 h-4 text-brand shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-dim italic">
+              A tradução altera o texto exibido no leitor de capítulos.
+            </p>
+          </div>
+
           <Button className="w-full" onClick={handleSave}>
             <Save className="w-4 h-4" />
             Salvar Alterações
@@ -66,9 +132,9 @@ export function SettingsModal({ open, onClose, userName, onUserNameChange }: Set
 
           <div className="border-t border-line pt-6 space-y-3">
             <InfoCard
-              emoji="✨"
-              title="Leitura Digital"
-              text="O app usa a tradução NVI (Nova Versão Internacional) diretamente do arquivo local, funcionando sem conexão."
+              emoji="📖"
+              title="Tradução atual"
+              text={`${translation.name} (${translation.id.toUpperCase()}) — o texto é carregado diretamente do arquivo local, funcionando sem conexão.`}
             />
             <InfoCard
               emoji="💾"
@@ -83,6 +149,7 @@ export function SettingsModal({ open, onClose, userName, onUserNameChange }: Set
               <StatRow label="Total de livros" value="66 livros" />
               <StatRow label="Total de capítulos" value={`${TOTAL_CHAPTERS.toLocaleString('pt-BR')} capítulos`} />
               <StatRow label="Plano de leitura" value="365 dias" />
+              <StatRow label="Traduções disponíveis" value={`${TRANSLATIONS.length} versões`} />
             </div>
           </div>
         </div>

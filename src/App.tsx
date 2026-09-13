@@ -5,6 +5,7 @@ import { BOOKS, getBook } from './data/books';
 import { DEVOCIONAL_TOTAL_DAYS, getDevocionalDay } from './data/devocional';
 import { getDayOfYear, getReadingForDay } from './lib/readingPlan';
 import { createMark } from './lib/marks';
+import { DEFAULT_TRANSLATION, getTranslation } from './data/translations';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useReadingProgress } from './hooks/useReadingProgress';
 import { useMarks } from './hooks/useMarks';
@@ -27,6 +28,8 @@ export default function App() {
   const [devocionalOpen, setDevocionalOpen] = useState(false);
   const [reader, setReader] = useState<{ book: string; chapter: number; totalChapters: number } | null>(null);
   const [userName, setUserName] = useLocalStorage('bibleUserName', '');
+  const [translationId, setTranslationId] = useLocalStorage('bibleTranslation', DEFAULT_TRANSLATION);
+  const translation = useMemo(() => getTranslation(translationId), [translationId]);
 
   const { progress, toggleChapter, isChapterRead, countRead, percentage } = useReadingProgress();
   const { marks, addMark, removeMark } = useMarks();
@@ -110,6 +113,8 @@ export default function App() {
         onClose={() => setSettingsOpen(false)}
         userName={userName}
         onUserNameChange={setUserName}
+        translationId={translationId}
+        onTranslationChange={setTranslationId}
       />
       <LibraryModal
         open={libraryOpen}
@@ -129,6 +134,8 @@ export default function App() {
         book={reader?.book ?? ''}
         chapter={reader?.chapter ?? 1}
         totalChapters={reader?.totalChapters ?? 1}
+        translationId={translation.id}
+        translationName={translation.name}
         onClose={() => setReader(null)}
         onBack={handleReaderBack}
         isChapterRead={isChapterRead}

@@ -65,7 +65,7 @@ export function AppShell({ view, onNavigate, onOpenSettings, children }: AppShel
 
       <footer className="border-t border-line py-8">
         <p className="text-center text-xs text-dim">
-          Bible Life · NVI — Nova Versão Internacional · Seus dados ficam salvos localmente no seu
+          Bible Life · Português · Seus dados ficam salvos localmente no seu
           navegador.
         </p>
       </footer>
