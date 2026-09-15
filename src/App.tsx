@@ -20,6 +20,7 @@ import { AppShell, type View } from './components/layout/AppShell';
 import { HomeView } from './components/home/HomeView';
 import { BibleView } from './components/bible/BibleView';
 import { ReaderModal } from './components/modals/ReaderModal';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
 import { LibraryModal } from './components/modals/LibraryModal';
 import { MarksModal } from './components/modals/MarksModal';
 import { SettingsModal } from './components/modals/SettingsModal';
@@ -177,19 +178,28 @@ export default function App() {
         onRemoveMark={removeMark}
         onOpenMark={handleOpenMark}
       />
-      <ReaderModal
-        book={reader?.book ?? ''}
-        chapter={reader?.chapter ?? 1}
-        totalChapters={reader?.totalChapters ?? 1}
-        translationId={translation.id}
-        translationName={translation.name}
-        onClose={() => setReader(null)}
-        onBack={handleReaderBack}
-        onTranslationChange={setTranslationId}
-        isChapterRead={isChapterRead}
-        onMarkAsRead={(b, c) => handleToggleChapter(b, c)}
-        onAddMark={handleAddMark}
-      />
+      <ErrorBoundary
+        key={reader ? `${reader.book}-${reader.chapter}` : 'idle'}
+        onError={(error) => {
+          console.error('Leitor encerrado após erro:', error);
+          setReader(null);
+          toast.error('O leitor fechou após um erro inesperado.', { description: error.message });
+        }}
+      >
+        <ReaderModal
+          book={reader?.book ?? ''}
+          chapter={reader?.chapter ?? 1}
+          totalChapters={reader?.totalChapters ?? 1}
+          translationId={translation.id}
+          translationName={translation.name}
+          onClose={() => setReader(null)}
+          onBack={handleReaderBack}
+          onTranslationChange={setTranslationId}
+          isChapterRead={isChapterRead}
+          onMarkAsRead={(b, c) => handleToggleChapter(b, c)}
+          onAddMark={handleAddMark}
+        />
+      </ErrorBoundary>
       <DevocionalModal
         open={devocionalOpen}
         onClose={() => setDevocionalOpen(false)}

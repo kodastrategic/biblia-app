@@ -113,3 +113,11 @@ export function getPiperAudio(): HTMLAudioElement {
   if (!piperAudio) piperAudio = new Audio();
   return piperAudio;
 }
+
+/** Libera os buffers do áudio anterior; no-op se o Piper nunca foi usado. */
+export function releasePiperAudio(): void {
+  if (!piperAudio) return;
+  piperAudio.pause();
+  piperAudio.removeAttribute('src');
+  piperAudio.load();
+}

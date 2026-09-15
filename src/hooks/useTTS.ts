@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getVoiceList, isTtsSupported, pickPreferredVoice } from '../lib/tts';
-import { getPiperAudio, getPiperStatus, onPiperStatusChange, PIPER_VOICE_SENTINEL, piperSynthesize } from '../lib/piperTTS';
+import { getPiperAudio, getPiperStatus, onPiperStatusChange, PIPER_VOICE_SENTINEL, piperSynthesize, releasePiperAudio } from '../lib/piperTTS';
 import { useLocalStorage } from './useLocalStorage';
 
 export type TTSState = 'idle' | 'playing' | 'paused';
@@ -106,6 +106,7 @@ export function useTTS() {
       }
 
       const audio = getPiperAudio();
+      releasePiperAudio();
       const { url, durationMs } = result;
       const backstop = window.setTimeout(() => finish(index + 1, url), durationMs + 1200);
       const onDone = () => {
@@ -148,7 +149,7 @@ export function useTTS() {
         return;
       }
 
-      synth?.cancel();
+      if (synth && (synth.speaking || synth.pending)) synth.cancel();
       verseIndexRef.current = index;
       setActiveVerse(index);
       setState('playing');
@@ -192,7 +193,7 @@ export function useTTS() {
   const pause = useCallback(() => {
     ++tokenRef.current;
     clearGap();
-    getPiperAudio().pause();
+    releasePiperAudio();
     synthRef.current?.cancel();
     setState('paused');
   }, [clearGap]);
@@ -207,7 +208,7 @@ export function useTTS() {
   const stop = useCallback(() => {
     ++tokenRef.current;
     clearGap();
-    getPiperAudio().pause();
+    releasePiperAudio();
     synthRef.current?.cancel();
     sessionRef.current = null;
     verseIndexRef.current = -1;
@@ -219,7 +220,7 @@ export function useTTS() {
     return () => {
       ++tokenRef.current;
       clearGap();
-      getPiperAudio().pause();
+      releasePiperAudio();
       synthRef.current?.cancel();
     };
   }, [clearGap]);
