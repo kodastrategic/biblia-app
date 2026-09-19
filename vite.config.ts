@@ -2,10 +2,40 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
+import fs from 'node:fs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const PACKAGE_ROOT = fileURLToPath(new URL('node_modules/piper-tts-web/dist/', import.meta.url));
+
+const AUDIO_EXT = /\.(mp3|ogg|wav|m4a|aac|flac|webm)$/i;
+
+function virtualMusicList(): Plugin {
+  const virtualId = 'virtual:music-list';
+  const resolvedId = '\0' + virtualId;
+  return {
+    name: 'virtual-music-list',
+    resolveId(id) {
+      if (id === virtualId) return resolvedId;
+    },
+    load(id) {
+      if (id !== resolvedId) return;
+      let files: string[] = [];
+      try {
+        const dir = path.join(__dirname, 'public', 'music');
+        if (fs.existsSync(dir)) {
+          files = fs
+            .readdirSync(dir)
+            .filter((file) => AUDIO_EXT.test(file))
+            .sort();
+        }
+      } catch {
+        /* sem pasta de música */
+      }
+      return `export default ${JSON.stringify(files.map((f) => `/music/${f}`))};`;
+    },
+  };
+}
 
 const PIPER_ASSETS: { url: string; file: string }[] = [
   { url: '/onnx/ort-wasm-simd-threaded.wasm', file: 'onnx/ort-wasm-simd-threaded.wasm' },
@@ -40,7 +70,7 @@ function piperAssets(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), piperAssets()],
+  plugins: [react(), tailwindcss(), piperAssets(), virtualMusicList()],
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     alias: {

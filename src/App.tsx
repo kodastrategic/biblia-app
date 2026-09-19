@@ -17,6 +17,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { useReadingProgress } from './hooks/useReadingProgress';
 import { useMarks } from './hooks/useMarks';
 import { useDevotionalProgress } from './hooks/useDevotionalProgress';
+import { useBackgroundMusic } from './lib/backgroundMusic';
 import { AppShell, type View } from './components/layout/AppShell';
 import { HomeView } from './components/home/HomeView';
 import { BibleView } from './components/bible/BibleView';
@@ -53,6 +54,17 @@ export default function App() {
   const { marks, addMark, removeMark } = useMarks();
   const { currentDay: devocionalDay, isComplete: devocionalIsComplete, completeDay } =
     useDevotionalProgress();
+  const { start: startMusic, stop: stopMusic } = useBackgroundMusic();
+
+  const openDevocional = () => {
+    setDevocionalOpen(true);
+    startMusic();
+  };
+
+  const closeDevocional = () => {
+    setDevocionalOpen(false);
+    stopMusic();
+  };
 
   const planStats = useMemo(() => getPlanStats(planConfig, progress), [planConfig, progress]);
   const currentPlanDay = useMemo(
@@ -127,7 +139,7 @@ export default function App() {
             devocionalTotalDays={DEVOCIONAL_TOTAL_DAYS}
             devocionalDay={devocionalDayData}
             devocionalIsComplete={devocionalIsComplete}
-            onOpenDevocional={() => setDevocionalOpen(true)}
+            onOpenDevocional={openDevocional}
             onOpenLibrary={() => setLibraryOpen(true)}
             onOpenMarks={() => setMarksOpen(true)}
           />
@@ -203,7 +215,7 @@ export default function App() {
       </ErrorBoundary>
       <DevocionalModal
         open={devocionalOpen}
-        onClose={() => setDevocionalOpen(false)}
+        onClose={closeDevocional}
         initialDay={devocionalDay}
         onCompleteDay={completeDay}
       />
