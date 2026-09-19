@@ -43,7 +43,7 @@ export function BibleView({
           Progresso de Leitura
         </p>
         <h2 className="text-4xl md:text-6xl font-serif font-semibold text-gradient leading-tight">
-          {userName ? `${userName.toUpperCase()}, ` : ''}VOCÊ JÁ LEU {percentage}%
+          {userName ? `${userName.toUpperCase()}, ` : ''}VOCÊ JÁ LEU {percentage.toFixed(2).replace('.', ',')}%
         </h2>
         <p className="text-sm text-muted mt-3">
           {countRead} capítulos lidos de {BOOKS.reduce((s, b) => s + b.chapters, 0)}

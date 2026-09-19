@@ -11,6 +11,7 @@ import {
   DEFAULT_PLAN,
 } from './lib/readingPlan';
 import { createMark } from './lib/marks';
+import { reportCrash } from './lib/crashLog';
 import { DEFAULT_TRANSLATION, getTranslation } from './data/translations';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useReadingProgress } from './hooks/useReadingProgress';
@@ -181,7 +182,7 @@ export default function App() {
       <ErrorBoundary
         key={reader ? `${reader.book}-${reader.chapter}` : 'idle'}
         onError={(error) => {
-          console.error('Leitor encerrado após erro:', error);
+          reportCrash('reader', error);
           setReader(null);
           toast.error('O leitor fechou após um erro inesperado.', { description: error.message });
         }}

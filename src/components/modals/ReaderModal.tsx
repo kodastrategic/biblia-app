@@ -14,6 +14,7 @@ import {
   Pause,
   Square,
   Volume2,
+  Lock,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { fetchChapter } from '../../lib/bible';
@@ -89,6 +90,8 @@ export function ReaderModal({
     voiceURI,
     rate,
     autoAdvance,
+    continuous,
+    continuousProgress,
     piperStatus,
     play,
     pause: pauseTts,
@@ -97,6 +100,7 @@ export function ReaderModal({
     setVoiceURI,
     setRate,
     setAutoAdvance,
+    setContinuous,
   } = tts;
   const isPiperSelected = voiceURI === PIPER_VOICE_SENTINEL;
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -473,7 +477,14 @@ export function ReaderModal({
               )}
 
               <div className="flex-1 min-w-0 text-center">
-                {isPiperSelected && piperStatus.phase === 'loading' ? (
+                {continuousProgress ? (
+                  <span className="inline-flex items-center gap-1.5 text-[11px] text-dim max-w-full truncate">
+                    <Loader2 className="w-3 h-3 animate-spin text-brand shrink-0" />
+                    <span className="truncate">
+                      Preparando leitura contínua... {continuousProgress.done}/{continuousProgress.total}
+                    </span>
+                  </span>
+                ) : isPiperSelected && piperStatus.phase === 'loading' ? (
                   <span className="inline-flex items-center gap-1.5 text-[11px] text-dim max-w-full truncate">
                     <Loader2 className="w-3 h-3 animate-spin text-brand shrink-0" />
                     <span className="truncate">{piperStatus.message ?? 'Baixando voz Piper...'}</span>
@@ -610,6 +621,27 @@ export function ReaderModal({
                     </>
                   )}
                 </div>
+
+                <button
+                  onClick={() => setContinuous((v) => !v)}
+                  aria-pressed={continuous}
+                  disabled={!isPiperSelected}
+                  title={
+                    isPiperSelected
+                      ? 'Pré-prepara o capítulo inteiro para continuar tocando com a tela bloqueada'
+                      : 'Disponível com a voz Piper'
+                  }
+                  className={cn(
+                    'inline-flex items-center gap-1 px-2.5 py-2 rounded-xl border text-[10px] font-bold transition-colors disabled:opacity-30 disabled:pointer-events-none',
+                    continuous
+                      ? 'bg-brand-soft border-brand/40 text-brand'
+                      : 'bg-white/5 border-line text-muted hover:text-fg',
+                  )}
+                >
+                  <Lock className="w-3 h-3" />
+                  CONT.
+                  {continuous && <Check className="w-3 h-3" />}
+                </button>
 
                 <button
                   onClick={() => setAutoAdvance((v) => !v)}

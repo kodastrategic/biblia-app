@@ -19,7 +19,7 @@ export function ProgressCard({ percentage, countRead, planLabel, userName }: Pro
         </p>
 
         <p className="text-5xl md:text-6xl font-serif font-semibold text-gradient leading-none mb-2">
-          {percentage}%
+{percentage.toFixed(2).replace('.', ',')}%
         </p>
         <p className="text-sm text-muted mb-6">
           {userName ? `${userName}, você já leu ` : 'Você já leu '}

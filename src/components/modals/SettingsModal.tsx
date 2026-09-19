@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { User, Save, BookOpenText, Check, Moon, Sun, CalendarRange, ChevronRight } from 'lucide-react';
+import { User, Save, BookOpenText, Check, Moon, Sun, CalendarRange, ChevronRight, AlertTriangle, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { TOTAL_CHAPTERS } from '../../data/books';
 import { TRANSLATIONS, getTranslation } from '../../data/translations';
 import type { ReadingPlanConfig } from '../../lib/readingPlan';
+import { getCrashLog, clearCrashLog, type CrashEntry } from '../../lib/crashLog';
 import { Modal, ModalHeader } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { cn } from '../../lib/cn';
@@ -44,9 +45,13 @@ export function SettingsModal({
 }: SettingsModalProps) {
   const [tempName, setTempName] = useState(userName);
   const [planOpen, setPlanOpen] = useState(false);
+  const [crashes, setCrashes] = useState<CrashEntry[]>(() => getCrashLog());
 
   useEffect(() => {
-    if (open) setTempName(userName);
+    if (open) {
+      setTempName(userName);
+      setCrashes(getCrashLog());
+    }
   }, [open, userName]);
 
   const translation = getTranslation(translationId);
@@ -197,7 +202,7 @@ export function SettingsModal({
             <div className="p-4 rounded-xl border border-line bg-panel/60">
               <p className="text-xs text-muted uppercase tracking-wider mb-2">Pré-visualização</p>
               <p className="text-lg font-serif text-gradient-brand">
-                {tempName.trim().toUpperCase()}, VOCÊ JÁ LEU {percentage}%
+                {tempName.trim().toUpperCase()}, VOCÊ JÁ LEU {percentage.toFixed(2).replace('.', ',')}%
               </p>
             </div>
           )}
@@ -214,6 +219,42 @@ export function SettingsModal({
               text="Todos os dados ficam salvos localmente no seu navegador. Nada é compartilhado."
             />
           </div>
+
+          {crashes.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-2 text-xs uppercase tracking-wider text-amber-400">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  Relatórios de erro
+                </span>
+                <button
+                  onClick={() => {
+                    clearCrashLog();
+                    setCrashes([]);
+                  }}
+                  className="inline-flex items-center gap-1 text-[10px] text-dim hover:text-fg transition-colors"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  Limpar
+                </button>
+              </div>
+              <div className="space-y-2">
+                {crashes.map((c, i) => (
+                  <details key={i} className="p-3 rounded-xl border border-amber-400/20 bg-amber-500/5">
+                    <summary className="text-[11px] text-amber-300 cursor-pointer">
+                      {new Date(c.at).toLocaleString('pt-BR')} · {c.context}
+                    </summary>
+                    <p className="text-[11px] text-muted mt-2 break-words">{c.message}</p>
+                    {c.stack && (
+                      <pre className="text-[9px] text-dim mt-1.5 whitespace-pre-wrap break-words leading-relaxed">
+                        {c.stack}
+                      </pre>
+                    )}
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="p-4 rounded-xl border border-line bg-panel/60">
             <p className="text-xs text-muted uppercase tracking-wider mb-3">Estatísticas</p>

@@ -67,7 +67,7 @@ export function useReadingProgress() {
   );
 
   const percentage = useMemo(
-    () => (TOTAL_CHAPTERS > 0 ? Math.round((countRead / TOTAL_CHAPTERS) * 100) : 0),
+    () => (TOTAL_CHAPTERS > 0 ? (countRead / TOTAL_CHAPTERS) * 100 : 0),
     [countRead],
   );
 

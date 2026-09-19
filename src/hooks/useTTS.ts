@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getVoiceList, isTtsSupported, pickPreferredVoice } from '../lib/tts';
-import { getPiperAudio, getPiperStatus, onPiperStatusChange, PIPER_VOICE_SENTINEL, piperSynthesize, releasePiperAudio } from '../lib/piperTTS';
+import { buildPiperWav, getPiperAudio, getPiperStatus, onPiperStatusChange, PIPER_VOICE_SENTINEL, piperSynthesize, piperSynthesizeBuffer, releasePiperAudio, type PiperPcm } from '../lib/piperTTS';
 import { useLocalStorage } from './useLocalStorage';
 
 export type TTSState = 'idle' | 'playing' | 'paused';
@@ -18,6 +18,8 @@ export function useTTS() {
   const [voiceURI, setVoiceURI] = useLocalStorage<string | null>('bibleTtsVoice', null);
   const [rate, setRate] = useLocalStorage<number>('bibleTtsRate', 0.95);
   const [autoAdvance, setAutoAdvance] = useLocalStorage<boolean>('bibleTtsAutoAdvance', true);
+  const [continuous, setContinuous] = useLocalStorage<boolean>('bibleTtsContinuous', false);
+  const [continuousProgress, setContinuousProgress] = useState<{ done: number; total: number } | null>(null);
   const [piperStatus, setPiperStatus] = useState(getPiperStatus());
 
   useEffect(() => onPiperStatusChange(setPiperStatus), []);
@@ -31,11 +33,21 @@ export function useTTS() {
   voiceURIRef.current = voiceURI;
   const rateRef = useRef(rate);
   rateRef.current = rate;
+  const continuousRef = useRef(continuous);
+  continuousRef.current = continuous;
 
   const tokenRef = useRef(0);
   const sessionRef = useRef<TTSSession | null>(null);
   const verseIndexRef = useRef(-1);
   const gapRef = useRef<number | null>(null);
+  const piperBackstopRef = useRef<number | null>(null);
+
+  const clearBackstop = useCallback(() => {
+    if (piperBackstopRef.current != null) {
+      window.clearTimeout(piperBackstopRef.current);
+      piperBackstopRef.current = null;
+    }
+  }, []);
 
   const clearGap = useCallback(() => {
     if (gapRef.current != null) {
@@ -79,6 +91,7 @@ export function useTTS() {
       const finish = (next: number, revokeUrl?: string) => {
         if (finished) return;
         finished = true;
+        clearBackstop();
         if (revokeUrl) URL.revokeObjectURL(revokeUrl);
         if (tokenRef.current === token) advanceTo(next, token);
       };
@@ -108,9 +121,13 @@ export function useTTS() {
       const audio = getPiperAudio();
       releasePiperAudio();
       const { url, durationMs } = result;
-      const backstop = window.setTimeout(() => finish(index + 1, url), durationMs + 1200);
+      clearBackstop();
+      piperBackstopRef.current = window.setTimeout(
+        () => finish(index + 1, url),
+        Math.max(durationMs * 1.4 + 1500, 5000),
+      );
       const onDone = () => {
-        window.clearTimeout(backstop);
+        clearBackstop();
         finish(index + 1, url);
       };
       audio.onended = onDone;
@@ -120,11 +137,97 @@ export function useTTS() {
       try {
         await audio.play();
       } catch {
-        window.clearTimeout(backstop);
+        clearBackstop();
         finish(index + 1, url);
       }
     },
-    [advanceTo],
+    [advanceTo, clearBackstop],
+  );
+
+  const speakPiperContinuous = useCallback(
+    async (index: number, token: number) => {
+      const session = sessionRef.current;
+      if (!session) return;
+
+      let finished = false;
+      const finish = (next: number, revokeUrl?: string) => {
+        if (finished) return;
+        finished = true;
+        clearBackstop();
+        setContinuousProgress(null);
+        if (revokeUrl) URL.revokeObjectURL(revokeUrl);
+        if (tokenRef.current === token) advanceTo(next, token);
+      };
+      const sleep = (ms: number) => new Promise<void>((r) => window.setTimeout(r, ms));
+
+      const targets: string[] = [];
+      for (let i = index; i < session.verses.length; i++) {
+        const text = String(session.verses[i] ?? '').trim();
+        if (text) targets.push(text);
+      }
+      if (!targets.length) {
+        finish(session.verses.length);
+        return;
+      }
+
+      setContinuousProgress({ done: 0, total: targets.length });
+      const parts: PiperPcm[] = [];
+      for (let k = 0; k < targets.length; k++) {
+        if (tokenRef.current !== token) {
+          setContinuousProgress(null);
+          return;
+        }
+        let pcm: PiperPcm | null = null;
+        for (let attempt = 0; attempt < 2 && !pcm; attempt++) {
+          if (attempt > 0) {
+            await sleep(350);
+            if (tokenRef.current !== token) {
+              setContinuousProgress(null);
+              return;
+            }
+          }
+          try {
+            pcm = await piperSynthesizeBuffer(targets[k]);
+            if (pcm.pcm.length === 0) pcm = null;
+          } catch {
+            /* tenta mais uma vez */
+          }
+        }
+        if (pcm) parts.push(pcm);
+        setContinuousProgress({ done: k + 1, total: targets.length });
+      }
+      if (tokenRef.current !== token) {
+        setContinuousProgress(null);
+        return;
+      }
+      if (!parts.length) {
+        finish(session.verses.length);
+        return;
+      }
+
+      const { blob, durationMs } = buildPiperWav(parts, 300);
+      void durationMs;
+      const url = URL.createObjectURL(blob);
+      if (tokenRef.current !== token) {
+        URL.revokeObjectURL(url);
+        setContinuousProgress(null);
+        return;
+      }
+
+      const audio = getPiperAudio();
+      releasePiperAudio();
+      const onDone = () => finish(session.verses.length, url);
+      audio.onended = onDone;
+      audio.onerror = onDone;
+      audio.playbackRate = rateRef.current;
+      audio.src = url;
+      try {
+        await audio.play();
+      } catch {
+        finish(session.verses.length, url);
+      }
+    },
+    [advanceTo, clearBackstop],
   );
 
   const speakAt = useCallback(
@@ -155,7 +258,8 @@ export function useTTS() {
       setState('playing');
 
       if (voiceURIRef.current === PIPER_VOICE_SENTINEL) {
-        void speakPiper(index, token);
+        if (continuousRef.current) void speakPiperContinuous(index, token);
+        else void speakPiper(index, token);
         return;
       }
 
@@ -177,7 +281,7 @@ export function useTTS() {
 
       synth?.speak(utterance);
     },
-    [advanceTo, speakPiper],
+    [advanceTo, speakPiper, speakPiperContinuous],
   );
 
   const play = useCallback(
@@ -193,10 +297,11 @@ export function useTTS() {
   const pause = useCallback(() => {
     ++tokenRef.current;
     clearGap();
+    clearBackstop();
     releasePiperAudio();
     synthRef.current?.cancel();
     setState('paused');
-  }, [clearGap]);
+  }, [clearGap, clearBackstop]);
 
   const resume = useCallback(() => {
     const session = sessionRef.current;
@@ -208,22 +313,24 @@ export function useTTS() {
   const stop = useCallback(() => {
     ++tokenRef.current;
     clearGap();
+    clearBackstop();
     releasePiperAudio();
     synthRef.current?.cancel();
     sessionRef.current = null;
     verseIndexRef.current = -1;
     setActiveVerse(-1);
     setState('idle');
-  }, [clearGap]);
+  }, [clearGap, clearBackstop]);
 
   useEffect(() => {
     return () => {
       ++tokenRef.current;
       clearGap();
+      clearBackstop();
       releasePiperAudio();
       synthRef.current?.cancel();
     };
-  }, [clearGap]);
+  }, [clearGap, clearBackstop]);
 
   return {
     supported,
@@ -233,10 +340,13 @@ export function useTTS() {
     voiceURI,
     rate,
     autoAdvance,
+    continuous,
+    continuousProgress,
     piperStatus,
     setVoiceURI,
     setRate,
     setAutoAdvance,
+    setContinuous,
     play,
     pause,
     resume,
