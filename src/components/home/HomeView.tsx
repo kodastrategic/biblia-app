@@ -1,5 +1,6 @@
-import { BookOpen } from 'lucide-react';
+import { BookOpen, History } from 'lucide-react';
 import type { BookMark, DevocionalDia } from '../../types';
+import type { LastRead } from '../../hooks/useLastRead';
 import { Button } from '../ui/Button';
 import { ProgressCard } from './ProgressCard';
 import { FeedCard } from './FeedCard';
@@ -18,6 +19,8 @@ interface HomeViewProps {
   onOpenDevocional: () => void;
   onOpenLibrary: () => void;
   onOpenMarks: () => void;
+  lastRead: LastRead | null;
+  onOpenLastRead: () => void;
 }
 
 export function HomeView({
@@ -33,6 +36,8 @@ export function HomeView({
   onOpenDevocional,
   onOpenLibrary,
   onOpenMarks,
+  lastRead,
+  onOpenLastRead,
 }: HomeViewProps) {
   return (
     <div className="max-w-6xl mx-auto px-5 md:px-8">
@@ -46,10 +51,14 @@ export function HomeView({
         />
       </div>
 
-      <div className="flex justify-center mb-10 md:mb-14">
+      <div className="flex flex-wrap justify-center items-center gap-3 mb-10 md:mb-14">
         <Button size="lg" onClick={onOpenLibrary}>
           <BookOpen className="w-5 h-5" />
           Ir para um capítulo
+        </Button>
+        <Button variant="outline" size="md" disabled={!lastRead} onClick={onOpenLastRead}>
+          <History className="w-4 h-4" />
+          Último capítulo
         </Button>
       </div>
 

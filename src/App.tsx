@@ -17,6 +17,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { useReadingProgress } from './hooks/useReadingProgress';
 import { useMarks } from './hooks/useMarks';
 import { useDevotionalProgress } from './hooks/useDevotionalProgress';
+import { useLastRead } from './hooks/useLastRead';
 import { useBackgroundMusic } from './lib/backgroundMusic';
 import { AppShell, type View } from './components/layout/AppShell';
 import { HomeView } from './components/home/HomeView';
@@ -55,6 +56,7 @@ export default function App() {
   const { currentDay: devocionalDay, isComplete: devocionalIsComplete, completeDay } =
     useDevotionalProgress();
   const { start: startMusic, stop: stopMusic } = useBackgroundMusic();
+  const { lastRead, recordRead } = useLastRead();
 
   const openDevocional = () => {
     setDevocionalOpen(true);
@@ -91,6 +93,7 @@ export default function App() {
 
   const openReader = (bookName: string, chapter: number) => {
     const info = getBook(bookName);
+    recordRead(bookName, chapter);
     setLibraryOpen(false);
     setReader({
       book: bookName,
@@ -142,6 +145,10 @@ export default function App() {
             onOpenDevocional={openDevocional}
             onOpenLibrary={() => setLibraryOpen(true)}
             onOpenMarks={() => setMarksOpen(true)}
+            lastRead={lastRead}
+            onOpenLastRead={() => {
+              if (lastRead) openReader(lastRead.book, lastRead.chapter);
+            }}
           />
         ) : (
           <BibleView
