@@ -18,6 +18,7 @@ import { useReadingProgress } from './hooks/useReadingProgress';
 import { useMarks } from './hooks/useMarks';
 import { useDevotionalProgress } from './hooks/useDevotionalProgress';
 import { useLastRead } from './hooks/useLastRead';
+import { useMemorias } from './hooks/useMemorias';
 import { useBackgroundMusic } from './lib/backgroundMusic';
 import { AppShell, type View } from './components/layout/AppShell';
 import { HomeView } from './components/home/HomeView';
@@ -28,6 +29,7 @@ import { LibraryModal } from './components/modals/LibraryModal';
 import { MarksModal } from './components/modals/MarksModal';
 import { SettingsModal } from './components/modals/SettingsModal';
 import { DevocionalModal } from './components/modals/DevocionalModal';
+import { MemoriasModal } from './components/modals/MemoriasModal';
 
 type Theme = 'dark' | 'light';
 
@@ -38,6 +40,7 @@ export default function App() {
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [marksOpen, setMarksOpen] = useState(false);
   const [devocionalOpen, setDevocionalOpen] = useState(false);
+  const [memoriasOpen, setMemoriasOpen] = useState(false);
   const [reader, setReader] = useState<{ book: string; chapter: number; totalChapters: number } | null>(null);
   const [userName, setUserName] = useLocalStorage('bibleUserName', '');
   const [translationId, setTranslationId] = useLocalStorage('bibleTranslation', DEFAULT_TRANSLATION);
@@ -57,6 +60,14 @@ export default function App() {
     useDevotionalProgress();
   const { start: startMusic, stop: stopMusic } = useBackgroundMusic();
   const { lastRead, recordRead } = useLastRead();
+  const {
+    memorias,
+    pendingCount: memoriasPendingCount,
+    addMemoria,
+    updateMemoria,
+    removeMemoria,
+    confirmMemoria,
+  } = useMemorias();
 
   const openDevocional = () => {
     setDevocionalOpen(true);
@@ -149,6 +160,8 @@ export default function App() {
             onOpenLastRead={() => {
               if (lastRead) openReader(lastRead.book, lastRead.chapter);
             }}
+            memoriasPendingCount={memoriasPendingCount}
+            onOpenMemorias={() => setMemoriasOpen(true)}
           />
         ) : (
           <BibleView
@@ -225,6 +238,15 @@ export default function App() {
         onClose={closeDevocional}
         initialDay={devocionalDay}
         onCompleteDay={completeDay}
+      />
+      <MemoriasModal
+        open={memoriasOpen}
+        onClose={() => setMemoriasOpen(false)}
+        memorias={memorias}
+        onAdd={addMemoria}
+        onUpdate={updateMemoria}
+        onRemove={removeMemoria}
+        onConfirm={confirmMemoria}
       />
     </>
   );

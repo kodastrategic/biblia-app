@@ -5,6 +5,7 @@ import { Button } from '../ui/Button';
 import { ProgressCard } from './ProgressCard';
 import { FeedCard } from './FeedCard';
 import { DevocionalCard } from './DevocionalCard';
+import { MemoriasCard } from './MemoriasCard';
 
 interface HomeViewProps {
   marks: BookMark[];
@@ -21,6 +22,8 @@ interface HomeViewProps {
   onOpenMarks: () => void;
   lastRead: LastRead | null;
   onOpenLastRead: () => void;
+  memoriasPendingCount: number;
+  onOpenMemorias: () => void;
 }
 
 export function HomeView({
@@ -38,9 +41,15 @@ export function HomeView({
   onOpenMarks,
   lastRead,
   onOpenLastRead,
+  memoriasPendingCount,
+  onOpenMemorias,
 }: HomeViewProps) {
   return (
     <div className="max-w-6xl mx-auto px-5 md:px-8">
+      <div className="mb-4">
+        <MemoriasCard pendingCount={memoriasPendingCount} onOpen={onOpenMemorias} />
+      </div>
+
       <div className="mb-8 md:mb-10">
         <DevocionalCard
           currentDay={devocionalCurrentDay}

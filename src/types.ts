@@ -29,6 +29,14 @@ export interface BookMark {
 
 export type ReadingProgress = Record<string, number[]>;
 
+export interface Memoria {
+  id: string;
+  text: string;
+  kind: 'feito' | 'pedido';
+  createdAt: number;
+  answeredAt?: number;
+}
+
 export interface DevocionalDia {
   dia: number;
   semana_tema: string;
