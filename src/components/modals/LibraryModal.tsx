@@ -60,7 +60,7 @@ export function LibraryModal({
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Pesquisar livro..."
-                  className="w-full bg-transparent text-fg placeholder:text-dim focus:outline-none text-sm"
+                  className="w-full bg-transparent text-fg placeholder:text-dim focus:outline-none text-base"
                 />
               </label>
 

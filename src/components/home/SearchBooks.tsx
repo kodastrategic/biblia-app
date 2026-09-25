@@ -70,7 +70,7 @@ export function SearchBooks({ onSelectBook }: SearchBooksProps) {
           onFocus={() => setOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder="Buscar livro (ex.: João, Salmos, 1 Timóteo...)"
-          className="w-full bg-transparent text-fg placeholder:text-dim focus:outline-none text-sm"
+          className="w-full bg-transparent text-fg placeholder:text-dim focus:outline-none text-base"
         />
         {query ? (
           <button
