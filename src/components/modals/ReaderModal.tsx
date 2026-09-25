@@ -37,6 +37,7 @@ interface ReaderModalProps {
   isChapterRead: (book: string, chapter: number) => boolean;
   onMarkAsRead: (book: string, chapter: number) => void;
   onAddMark: (text: string, book: string, chapter: number, verse: number, verseEnd?: number) => void;
+  onChapterViewed: (book: string, chapter: number) => void;
 }
 
 interface SelectionInfo {
@@ -68,6 +69,7 @@ export function ReaderModal({
   isChapterRead,
   onMarkAsRead,
   onAddMark,
+  onChapterViewed,
 }: ReaderModalProps) {
   const [currentChapter, setCurrentChapter] = useState(chapter);
   const [verses, setVerses] = useState<string[]>([]);
@@ -120,6 +122,11 @@ export function ReaderModal({
     if (currentChapter !== chapter) setCurrentChapter(chapter);
     stopTts();
   }, [book, chapter, stopTts]);
+
+  useEffect(() => {
+    if (!book || !currentChapter) return;
+    onChapterViewed(book, currentChapter);
+  }, [book, currentChapter, onChapterViewed]);
 
   useEffect(() => {
     if (!book) stopTts();

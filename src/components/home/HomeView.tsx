@@ -3,6 +3,7 @@ import type { LastRead } from '../../hooks/useLastRead';
 import { FeedCard } from './FeedCard';
 import { DevocionalCard } from './DevocionalCard';
 import { HomeHub } from './HomeHub';
+import { SearchBooks } from './SearchBooks';
 
 interface HomeViewProps {
   marks: BookMark[];
@@ -21,6 +22,7 @@ interface HomeViewProps {
   onOpenLastRead: () => void;
   memoriasPendingCount: number;
   onOpenMemorias: () => void;
+  onSelectBook: (name: string) => void;
 }
 
 export function HomeView({
@@ -40,9 +42,14 @@ export function HomeView({
   onOpenLastRead,
   memoriasPendingCount,
   onOpenMemorias,
+  onSelectBook,
 }: HomeViewProps) {
   return (
     <div className="max-w-6xl mx-auto px-5 md:px-8">
+      <div className="mb-6 md:mb-8">
+        <SearchBooks onSelectBook={onSelectBook} />
+      </div>
+
       <div className="mb-8 md:mb-10">
         <DevocionalCard
           currentDay={devocionalCurrentDay}

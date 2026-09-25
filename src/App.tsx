@@ -38,6 +38,7 @@ export default function App() {
   const [selectedDay, setSelectedDay] = useState(1);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [libraryBook, setLibraryBook] = useState<string | null>(null);
   const [marksOpen, setMarksOpen] = useState(false);
   const [devocionalOpen, setDevocionalOpen] = useState(false);
   const [memoriasOpen, setMemoriasOpen] = useState(false);
@@ -134,6 +135,16 @@ export default function App() {
     openReader(mark.book, mark.chapter);
   };
 
+  const handleOpenLibrary = () => {
+    setLibraryBook(null);
+    setLibraryOpen(true);
+  };
+
+  const handleSelectBookFromSearch = (name: string) => {
+    setLibraryBook(name);
+    setLibraryOpen(true);
+  };
+
   return (
     <>
       <Toaster position="top-center" theme={theme} richColors />
@@ -154,7 +165,7 @@ export default function App() {
             devocionalDay={devocionalDayData}
             devocionalIsComplete={devocionalIsComplete}
             onOpenDevocional={openDevocional}
-            onOpenLibrary={() => setLibraryOpen(true)}
+            onOpenLibrary={handleOpenLibrary}
             onOpenMarks={() => setMarksOpen(true)}
             lastRead={lastRead}
             onOpenLastRead={() => {
@@ -162,6 +173,7 @@ export default function App() {
             }}
             memoriasPendingCount={memoriasPendingCount}
             onOpenMemorias={() => setMemoriasOpen(true)}
+            onSelectBook={handleSelectBookFromSearch}
           />
         ) : (
           <BibleView
@@ -177,7 +189,7 @@ export default function App() {
             progress={progress}
             onToggleChapter={handleToggleChapter}
             onReadNow={openReader}
-            onOpenLibrary={() => setLibraryOpen(true)}
+            onOpenLibrary={handleOpenLibrary}
           />
         )}
       </AppShell>
@@ -199,10 +211,14 @@ export default function App() {
       />
       <LibraryModal
         open={libraryOpen}
-        onClose={() => setLibraryOpen(false)}
+        onClose={() => {
+          setLibraryBook(null);
+          setLibraryOpen(false);
+        }}
         books={BOOKS}
         readChapters={progress}
         onSelectChapter={openReader}
+        initialBook={libraryBook}
       />
       <MarksModal
         open={marksOpen}
@@ -231,6 +247,7 @@ export default function App() {
           isChapterRead={isChapterRead}
           onMarkAsRead={(b, c) => handleToggleChapter(b, c)}
           onAddMark={handleAddMark}
+          onChapterViewed={recordRead}
         />
       </ErrorBoundary>
       <DevocionalModal

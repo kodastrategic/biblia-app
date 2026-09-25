@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Book as BibleIcon, Search, ChevronRight } from 'lucide-react';
 import type { Book } from '../../types';
 import { cn } from '../../lib/cn';
@@ -10,9 +10,17 @@ interface LibraryModalProps {
   books: Book[];
   readChapters: Record<string, Set<number>>;
   onSelectChapter: (bookName: string, chapter: number) => void;
+  initialBook?: string | null;
 }
 
-export function LibraryModal({ open, onClose, books, readChapters, onSelectChapter }: LibraryModalProps) {
+export function LibraryModal({
+  open,
+  onClose,
+  books,
+  readChapters,
+  onSelectChapter,
+  initialBook,
+}: LibraryModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
@@ -20,6 +28,12 @@ export function LibraryModal({ open, onClose, books, readChapters, onSelectChapt
   const filteredBooks = normalized
     ? books.filter((b) => b.name.toLowerCase().includes(normalized))
     : books;
+
+  useEffect(() => {
+    if (!initialBook) return;
+    const book = books.find((b) => b.name === initialBook);
+    if (book) setSelectedBook(book);
+  }, [initialBook, books]);
 
   const handleClose = () => {
     setSelectedBook(null);
