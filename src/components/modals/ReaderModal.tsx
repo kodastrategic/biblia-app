@@ -723,11 +723,11 @@ export function ReaderModal({
         </div>
 
         {/* Footer */}
-        <div className="shrink-0 flex items-center justify-between px-4 md:px-6 py-4 bg-panel border-t border-line">
+        <div className="shrink-0 flex items-center justify-between gap-2 px-6 md:px-8 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-panel border-t border-line">
           <button
             onClick={goPrevChapter}
             disabled={currentChapter === 1}
-            className="inline-flex items-center gap-2 text-sm font-bold text-muted hover:text-fg transition-colors disabled:opacity-20 disabled:pointer-events-none"
+            className="inline-flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-muted hover:text-fg hover:bg-white/5 transition-colors disabled:opacity-20 disabled:pointer-events-none"
           >
             <ChevronLeft className="w-4 h-4" />
             ANTERIOR
@@ -738,7 +738,7 @@ export function ReaderModal({
           <button
             onClick={goNextChapter}
             disabled={currentChapter === totalChapters}
-            className="inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand-strong transition-colors disabled:opacity-20 disabled:pointer-events-none"
+            className="inline-flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-bold text-brand hover:text-brand-strong hover:bg-white/5 transition-colors disabled:opacity-20 disabled:pointer-events-none"
           >
             PRÓXIMO
             <ChevronRight className="w-4 h-4" />
