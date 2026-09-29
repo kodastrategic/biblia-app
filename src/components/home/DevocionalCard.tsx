@@ -6,10 +6,11 @@ interface DevocionalCardProps {
   totalDays: number;
   day: DevocionalDia | null;
   isComplete: boolean;
+  seriesLabel?: string;
   onOpen: () => void;
 }
 
-export function DevocionalCard({ currentDay, totalDays, day, isComplete, onOpen }: DevocionalCardProps) {
+export function DevocionalCard({ currentDay, totalDays, day, isComplete, seriesLabel, onOpen }: DevocionalCardProps) {
   return (
     <button
       onClick={onOpen}
@@ -32,6 +33,11 @@ export function DevocionalCard({ currentDay, totalDays, day, isComplete, onOpen 
           <p className="text-[10px] uppercase tracking-[0.25em] text-amber-300/90 font-bold mb-1.5">
             <Sunrise className="w-3.5 h-3.5 inline -mt-0.5 mr-1.5" />
             Devocional
+            {seriesLabel && (
+              <span className="ml-2 inline-block px-1.5 py-px rounded-full border border-amber-400/40 bg-amber-400/10 text-amber-300 text-[9px] font-bold tracking-wider align-middle">
+                {seriesLabel}
+              </span>
+            )}
           </p>
           <p className="text-base md:text-lg text-fg font-semibold leading-snug mb-1">
             {isComplete

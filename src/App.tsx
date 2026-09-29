@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Toaster, toast } from 'sonner';
 import type { BookMark } from './types';
 import { BOOKS, getBook } from './data/books';
-import { DEVOCIONAL_TOTAL_DAYS, getDevocionalDay } from './data/devocional';
+import { getDevocionalDay, getSeriesTotal } from './data/devocional';
 import {
   getCurrentPlanDay,
   getPlanStats,
@@ -57,7 +57,7 @@ export default function App() {
 
   const { progress, toggleChapter, isChapterRead, countRead, percentage } = useReadingProgress();
   const { marks, addMark, removeMark } = useMarks();
-  const { currentDay: devocionalDay, isComplete: devocionalIsComplete, completeDay } =
+  const { currentSeries: devocionalSeries, currentDay: devocionalDay, isComplete: devocionalIsComplete, completeDay } =
     useDevotionalProgress();
   const { start: startMusic, stop: stopMusic } = useBackgroundMusic();
   const { lastRead, recordRead } = useLastRead();
@@ -96,7 +96,11 @@ export default function App() {
     () => getReadingForPlanDay(safeSelectedDay, planConfig, progress),
     [safeSelectedDay, planConfig, progress],
   );
-  const devocionalDayData = useMemo(() => getDevocionalDay(devocionalDay), [devocionalDay]);
+  const devocionalTotalDays = getSeriesTotal(devocionalSeries);
+  const devocionalDayData = useMemo(
+    () => getDevocionalDay(devocionalSeries, devocionalDay),
+    [devocionalSeries, devocionalDay],
+  );
 
   const planLabel =
     planConfig.mode === 'chapters'
@@ -161,7 +165,8 @@ export default function App() {
             planLabel={planLabel}
             userName={userName}
             devocionalCurrentDay={devocionalDay}
-            devocionalTotalDays={DEVOCIONAL_TOTAL_DAYS}
+            devocionalSeries={devocionalSeries}
+            devocionalTotalDays={devocionalTotalDays}
             devocionalDay={devocionalDayData}
             devocionalIsComplete={devocionalIsComplete}
             onOpenDevocional={openDevocional}
@@ -253,6 +258,8 @@ export default function App() {
       <DevocionalModal
         open={devocionalOpen}
         onClose={closeDevocional}
+        series={devocionalSeries}
+        totalDays={devocionalTotalDays}
         initialDay={devocionalDay}
         onCompleteDay={completeDay}
       />

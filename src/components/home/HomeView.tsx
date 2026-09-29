@@ -12,6 +12,7 @@ interface HomeViewProps {
   planLabel: string;
   userName?: string;
   devocionalCurrentDay: number;
+  devocionalSeries: number;
   devocionalTotalDays: number;
   devocionalDay: DevocionalDia | null;
   devocionalIsComplete: boolean;
@@ -32,6 +33,7 @@ export function HomeView({
   planLabel,
   userName,
   devocionalCurrentDay,
+  devocionalSeries,
   devocionalTotalDays,
   devocionalDay,
   devocionalIsComplete,
@@ -56,6 +58,7 @@ export function HomeView({
           totalDays={devocionalTotalDays}
           day={devocionalDay}
           isComplete={devocionalIsComplete}
+          seriesLabel={devocionalSeries > 0 ? `Fase ${devocionalSeries + 1}` : undefined}
           onOpen={onOpenDevocional}
         />
       </div>

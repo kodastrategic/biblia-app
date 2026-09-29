@@ -9,32 +9,33 @@ import {
   CheckCircle2,
   Sunrise,
 } from 'lucide-react';
-import type { DevocionalDia } from '../../types';
-import { DEVOCIONAL_TOTAL_DAYS, getDevocionalDay } from '../../data/devocional';
+import { getDevocionalDay } from '../../data/devocional';
 import { cn } from '../../lib/cn';
 import { Modal } from '../ui/Modal';
 
 interface DevocionalModalProps {
   open: boolean;
   onClose: () => void;
+  series: number;
+  totalDays: number;
   initialDay: number;
   onCompleteDay: (day: number) => void;
 }
 
-export function DevocionalModal({ open, onClose, initialDay, onCompleteDay }: DevocionalModalProps) {
+export function DevocionalModal({ open, onClose, series, totalDays, initialDay, onCompleteDay }: DevocionalModalProps) {
   const [day, setDay] = useState(initialDay);
 
   useEffect(() => {
     if (open) setDay(initialDay);
   }, [open, initialDay]);
 
-  const current = getDevocionalDay(day);
+  const current = getDevocionalDay(series, day);
   const done = day < initialDay;
 
   const complete = () => {
     if (done) return;
     onCompleteDay(day);
-    setDay((d) => Math.min(d + 1, DEVOCIONAL_TOTAL_DAYS));
+    setDay((d) => Math.min(d + 1, totalDays));
   };
 
   return (
@@ -49,7 +50,7 @@ export function DevocionalModal({ open, onClose, initialDay, onCompleteDay }: De
             <div className="min-w-0">
               <h2 className="font-semibold text-fg leading-tight truncate">Devocional</h2>
               <p className="text-[10px] text-dim uppercase tracking-wider mt-0.5">
-                Dia {day} de {DEVOCIONAL_TOTAL_DAYS}
+                {series > 0 ? `Fase ${series + 1} · ` : ''}Dia {day} de {totalDays}
               </p>
             </div>
           </div>
@@ -138,8 +139,8 @@ export function DevocionalModal({ open, onClose, initialDay, onCompleteDay }: De
           </button>
 
           <button
-            onClick={() => setDay((d) => Math.min(DEVOCIONAL_TOTAL_DAYS, d + 1))}
-            disabled={day === DEVOCIONAL_TOTAL_DAYS}
+            onClick={() => setDay((d) => Math.min(totalDays, d + 1))}
+            disabled={day === totalDays}
             className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-300 hover:text-amber-200 transition-colors disabled:opacity-20 disabled:pointer-events-none"
           >
             PRÓXIMO

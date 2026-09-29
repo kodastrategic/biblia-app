@@ -1,11 +1,18 @@
-import raw from './devocional.json';
+import rawFase1 from './devocional.json';
+import rawFase2 from './devocional2.json';
 import type { Devocional } from '../types';
 
-export const devocional = raw as Devocional;
+export const DEVOCIONAIS: Devocional[] = [rawFase1 as Devocional, rawFase2 as Devocional];
 
-export const DEVOCIONAL_TOTAL_DAYS = devocional.dias.length;
+export const DEVOCIONAL_SERIES = DEVOCIONAIS.length;
 
-export function getDevocionalDay(day: number) {
-  const safe = Math.min(Math.max(1, day), DEVOCIONAL_TOTAL_DAYS);
-  return devocional.dias.find((d) => d.dia === safe) ?? null;
+export function getSeriesTotal(series: number): number {
+  const safe = Math.min(Math.max(0, series), DEVOCIONAIS.length - 1);
+  return DEVOCIONAIS[safe].dias.length;
+}
+
+export function getDevocionalDay(series: number, day: number) {
+  const safeSeries = Math.min(Math.max(0, series), DEVOCIONAIS.length - 1);
+  const safeDay = Math.min(Math.max(1, day), getSeriesTotal(safeSeries));
+  return DEVOCIONAIS[safeSeries].dias.find((d) => d.dia === safeDay) ?? null;
 }
